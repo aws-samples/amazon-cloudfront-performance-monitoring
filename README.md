@@ -85,7 +85,7 @@ In the head section of HTML page, place the above code snippet and the web-vital
 ![CloudWatch RUM](/images/client3.jpg)
 
 A sample HTML page can be found  
-[here, line 3 - 27](/sample.html)
+[here, line 22 - 46](/sample.html)
 
 ## IAM Identity Center ( AWS SSO)
 
