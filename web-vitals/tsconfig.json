@@ -1,0 +1,24 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "declaration": true,
+    "lib": ["es2017", "DOM"],
+    "module": "esnext",
+    "moduleResolution": "nodenext",
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitReturns": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "outDir": "./dist/modules",
+    "preserveConstEnums": true,
+    "rootDir": "./src",
+    "strict": true,
+    "target": "esnext",
+    "tsBuildInfoFile": "./tsconfig.tsbuildinfo",
+    "allowJs": true,
+  },
+  "include": [
+    "src/**/*.ts"
+, "src/measure.js", "src/measure.js"  ],
+  "exclude": []
+}

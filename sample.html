@@ -1,0 +1,52 @@
+<!--
+  /*
+ * Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ * SPDX-License-Identifier: MIT-0
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this
+ * software and associated documentation files (the "Software"), to deal in the Software
+ * without restriction, including without limitation the rights to use, copy, modify,
+ * merge, publish, distribute, sublicense, and/or sell copies of the Software, and to
+ * permit persons to whom the Software is furnished to do so.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+ * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+ * PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+ * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+ * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+ * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
+-->
+<html>
+    <head>
+<script type="module" defer>
+  import {onTTFB, onResource,onFCP, onLCP,sendToAnalytics} from './public/scripts/web-vitals.attribution.js';
+  onLCP(sendToAnalytics);
+  onFCP(sendToAnalytics);
+  onTTFB(sendToAnalytics);
+  onResource(sendToAnalytics);
+</script>
+<script>
+  (function(n,i,v,r,s,c,x,z){x=window.AwsRumClient={q:[],n:n,i:i,v:v,r:r,c:c};window[n]=function(c,p){x.q.push({c:c,p:p});};z=document.createElement('script');z.async=true;z.src=s;document.head.insertBefore(z,document.head.getElementsByTagName('script')[0]);})(
+    'cwr',
+    '3d427fef-71cd-4a17-8db9-24ba8fb9c203',
+    '1.0.0',
+    'eu-west-1',
+    'https://client.rum.us-east-1.amazonaws.com/1.12.0/cwr.js',
+    {
+      sessionSampleRate: 1,
+      guestRoleArn: "arn:aws:iam::123456789012:role/CloudFrontMonitoringStack-idprole816BAD8B-CCUNQB0IWAV0",
+      identityPoolId: "eu-west-1:e7be7fa1-a1c1-4815-9562-f37d134466c1",
+      endpoint: "https://dataplane.rum.eu-west-1.amazonaws.com",
+      telemetries: ["http","errors"],
+      allowCookies: true,
+      enableXRay: false
+    }
+  );
+</script>
+</head>
+<body>
+    Test Page 
+    
+</body>
+</html>

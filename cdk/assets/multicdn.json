@@ -1,0 +1,2452 @@
+{
+    "annotations": {
+        "list": [
+            {
+                "builtIn": 1,
+                "datasource": "-- Grafana --",
+                "enable": true,
+                "hide": true,
+                "iconColor": "rgba(0, 211, 255, 1)",
+                "name": "Annotations & Alerts",
+                "target": {
+                    "limit": 100,
+                    "matchAny": false,
+                    "tags": [],
+                    "type": "dashboard"
+                },
+                "type": "dashboard"
+            }
+        ]
+    },
+    "editable": true,
+    "fiscalYearStartMonth": 0,
+    "graphTooltip": 0,
+    "id": 2,
+    "iteration": 1672348680803,
+    "links": [],
+    "liveNow": false,
+    "panels": [
+        {
+            "collapsed": false,
+            "gridPos": {
+                "h": 1,
+                "w": 24,
+                "x": 0,
+                "y": 0
+            },
+            "id": 24,
+            "panels": [],
+            "title": "Aggregated",
+            "type": "row"
+        },
+        {
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "fixedColor": "semi-dark-blue",
+                        "mode": "fixed"
+                    },
+                    "displayName": "${__series.name}",
+                    "mappings": [],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            },
+                            {
+                                "color": "red",
+                                "value": 80
+                            }
+                        ]
+                    },
+                    "unit": "percentunit"
+                },
+                "overrides": [
+                    {
+                        "matcher": {
+                            "id": "byRegexp",
+                            "options": "/Akamai/"
+                        },
+                        "properties": [
+                            {
+                                "id": "color",
+                                "value": {
+                                    "fixedColor": "blue",
+                                    "mode": "fixed"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byRegexp",
+                            "options": "/Cloudfront/"
+                        },
+                        "properties": [
+                            {
+                                "id": "color",
+                                "value": {
+                                    "fixedColor": "green",
+                                    "mode": "fixed"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            "gridPos": {
+                "h": 5,
+                "w": 9,
+                "x": 0,
+                "y": 1
+            },
+            "id": 39,
+            "options": {
+                "colorMode": "value",
+                "graphMode": "none",
+                "justifyMode": "auto",
+                "orientation": "auto",
+                "reduceOptions": {
+                    "calcs": [
+                        "mean"
+                    ],
+                    "fields": "",
+                    "values": false
+                },
+                "text": {},
+                "textMode": "auto"
+            },
+            "pluginVersion": "8.4.7",
+            "targets": [
+                {
+                    "datasource": {
+                        "type": "cloudwatch",
+                        "uid": "7kalSkc4z"
+                    },
+                    "expression": "fields concat(metadata.countryCode,'-',event_details.cdn) as cdn\n|filter event_type='cdn_metrics' and metadata.countryCode in [${country:singlequote}] and event_details.cdn!='NA'\n|stats sum(event_details.cacheStatus='MISS') as cachemiss,sum(event_details.cacheStatus='HIT') as cachehit,cachehit/(cachemiss+cachehit) as chr by cdn,bin(5m) as event_timestamp\n|display  event_timestamp,cdn,chr",
+                    "id": "",
+                    "logGroupNames": [
+                        "${log_group}"
+                    ],
+                    "namespace": "",
+                    "queryMode": "Logs",
+                    "refId": "A",
+                    "region": "default",
+                    "statsGroups": [
+                        "cdn",
+                        "event_timestamp"
+                    ]
+                },
+                {
+                    "datasource": {
+                        "type": "cloudwatch",
+                        "uid": "7kalSkc4z"
+                    },
+                    "expression": "fields concat(event_details.cdn) as cdn\n|filter event_type='cdn_metrics' and event_details.cdn!='NA'\n|stats sum(event_details.cacheStatus='MISS') as cachemiss,sum(event_details.cacheStatus='HIT') as cachehit,cachehit/(cachemiss+cachehit) as Global by cdn,bin(5m) as event_timestamp\n|display  event_timestamp,Global,'-',cdn",
+                    "hide": false,
+                    "id": "",
+                    "logGroupNames": [
+                        "/aws/vendedlogs/RUMService_MultiCDNMonitorStack-rum3f52eb6e"
+                    ],
+                    "namespace": "",
+                    "queryMode": "Logs",
+                    "refId": "B",
+                    "region": "default",
+                    "statsGroups": [
+                        "cdn",
+                        "event_timestamp"
+                    ]
+                }
+            ],
+            "title": "Cache Hit Ratio (avg)",
+            "transformations": [],
+            "type": "stat"
+        },
+        {
+            "description": "gzip/br compression rate",
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "thresholds"
+                    },
+                    "displayName": "${__series.name}",
+                    "mappings": [],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            },
+                            {
+                                "color": "red",
+                                "value": 80
+                            }
+                        ]
+                    },
+                    "unit": "percentunit"
+                },
+                "overrides": [
+                    {
+                        "matcher": {
+                            "id": "byRegexp",
+                            "options": "/Akamai/"
+                        },
+                        "properties": [
+                            {
+                                "id": "color",
+                                "value": {
+                                    "fixedColor": "blue",
+                                    "mode": "fixed"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byRegexp",
+                            "options": "/Cloudfront/"
+                        },
+                        "properties": [
+                            {
+                                "id": "color",
+                                "value": {
+                                    "fixedColor": "green",
+                                    "mode": "fixed"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            "gridPos": {
+                "h": 5,
+                "w": 9,
+                "x": 9,
+                "y": 1
+            },
+            "id": 38,
+            "options": {
+                "colorMode": "value",
+                "graphMode": "none",
+                "justifyMode": "auto",
+                "orientation": "auto",
+                "reduceOptions": {
+                    "calcs": [],
+                    "fields": "",
+                    "values": false
+                },
+                "textMode": "auto"
+            },
+            "pluginVersion": "8.4.7",
+            "targets": [
+                {
+                    "datasource": {
+                        "type": "cloudwatch",
+                        "uid": "7kalSkc4z"
+                    },
+                    "expression": "fields concat(metadata.countryCode,'-',event_details.cdn) as cdn\n|filter event_type='cdn_metrics' and metadata.countryCode in [${country:singlequote}] and event_details.initiatorType!='img'\n|stats avg(event_details.compressRate) as compression by bin(5m) as event_timestamp,cdn\n|filter compression>0\n|display event_timestamp,cdn,compression",
+                    "hide": false,
+                    "id": "",
+                    "logGroupNames": [
+                        "${log_group}"
+                    ],
+                    "namespace": "",
+                    "queryMode": "Logs",
+                    "refId": "A",
+                    "region": "default",
+                    "statsGroups": [
+                        "event_timestamp",
+                        "cdn"
+                    ]
+                },
+                {
+                    "datasource": {
+                        "type": "cloudwatch",
+                        "uid": "7kalSkc4z"
+                    },
+                    "expression": "fields event_details.cdn as cdn\n|filter event_type='cdn_metrics' and event_details.initiatorType!='img'\n|stats avg(event_details.compressRate) as compression by cdn,bin(5m) as event_timestamp\n|filter compression>0\n\n|display event_timestamp,cdn,compression",
+                    "hide": false,
+                    "id": "",
+                    "logGroupNames": [
+                        "/aws/vendedlogs/RUMService_MultiCDNMonitorStack-rum3f52eb6e"
+                    ],
+                    "namespace": "",
+                    "queryMode": "Logs",
+                    "refId": "Global",
+                    "region": "default",
+                    "statsGroups": [
+                        "cdn",
+                        "event_timestamp"
+                    ]
+                }
+            ],
+            "title": "Compression Rate",
+            "type": "stat"
+        },
+        {
+            "description": "",
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "fixed"
+                    },
+                    "mappings": [],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            }
+                        ]
+                    }
+                },
+                "overrides": [
+                    {
+                        "matcher": {
+                            "id": "byRegexp",
+                            "options": "/Akamai/"
+                        },
+                        "properties": [
+                            {
+                                "id": "color"
+                            },
+                            {
+                                "id": "color",
+                                "value": {
+                                    "fixedColor": "blue",
+                                    "mode": "fixed"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byRegexp",
+                            "options": "/Cloudfront/"
+                        },
+                        "properties": [
+                            {
+                                "id": "color",
+                                "value": {
+                                    "fixedColor": "green",
+                                    "mode": "fixed"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            "gridPos": {
+                "h": 5,
+                "w": 9,
+                "x": 0,
+                "y": 6
+            },
+            "id": 37,
+            "options": {
+                "colorMode": "value",
+                "graphMode": "area",
+                "justifyMode": "auto",
+                "orientation": "auto",
+                "reduceOptions": {
+                    "calcs": [
+                        "sum"
+                    ],
+                    "fields": "",
+                    "values": false
+                },
+                "textMode": "auto"
+            },
+            "pluginVersion": "8.4.7",
+            "targets": [
+                {
+                    "datasource": {
+                        "type": "cloudwatch",
+                        "uid": "7kalSkc4z"
+                    },
+                    "expression": "field concat(metadata.countryCode,'-',event_details.cdn,'-',metadata.deviceType) as cdn\n|filter event_type='cdn_metrics' and metadata.countryCode in [${country:singlequote}] and event_details.initiatorType='navigation'\n|stats count() as pageViews by bin(5m) as event_timestamp,cdn\n|display event_timestamp,cdn,pageViews",
+                    "id": "",
+                    "logGroupNames": [
+                        "${log_group}"
+                    ],
+                    "namespace": "",
+                    "queryMode": "Logs",
+                    "refId": "A",
+                    "region": "default",
+                    "statsGroups": [
+                        "event_timestamp",
+                        "cdn"
+                    ]
+                },
+                {
+                    "datasource": {
+                        "type": "cloudwatch",
+                        "uid": "7kalSkc4z"
+                    },
+                    "expression": "field concat(metadata.deviceType) as cdn\n|filter event_type='cdn_metrics' and event_details.initiatorType='navigation'\n|stats count() as pageViews by bin(5m) as event_timestamp,cdn\n|display event_timestamp,cdn,pageViews",
+                    "hide": false,
+                    "id": "",
+                    "logGroupNames": [
+                        "/aws/vendedlogs/RUMService_MultiCDNMonitorStack-rum3f52eb6e"
+                    ],
+                    "namespace": "",
+                    "queryMode": "Logs",
+                    "refId": "B",
+                    "region": "default",
+                    "statsGroups": [
+                        "event_timestamp",
+                        "cdn"
+                    ]
+                }
+            ],
+            "title": "Total PageViews by Device: ${country}",
+            "type": "stat"
+        },
+        {
+            "description": "",
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "fixedColor": "semi-dark-blue",
+                        "mode": "fixed"
+                    },
+                    "displayName": "${__series.name}",
+                    "mappings": [],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            },
+                            {
+                                "color": "red",
+                                "value": 80
+                            }
+                        ]
+                    },
+                    "unit": "short"
+                },
+                "overrides": [
+                    {
+                        "matcher": {
+                            "id": "byRegexp",
+                            "options": "/Akamai/"
+                        },
+                        "properties": [
+                            {
+                                "id": "color",
+                                "value": {
+                                    "fixedColor": "blue",
+                                    "mode": "fixed"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byRegexp",
+                            "options": "/Cloudfront/"
+                        },
+                        "properties": [
+                            {
+                                "id": "color",
+                                "value": {
+                                    "fixedColor": "green",
+                                    "mode": "fixed"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            "gridPos": {
+                "h": 5,
+                "w": 9,
+                "x": 9,
+                "y": 6
+            },
+            "id": 26,
+            "options": {
+                "colorMode": "value",
+                "graphMode": "area",
+                "justifyMode": "center",
+                "orientation": "auto",
+                "reduceOptions": {
+                    "calcs": [
+                        "sum"
+                    ],
+                    "fields": "",
+                    "values": false
+                },
+                "text": {},
+                "textMode": "value_and_name"
+            },
+            "pluginVersion": "8.4.7",
+            "targets": [
+                {
+                    "datasource": {
+                        "type": "cloudwatch",
+                        "uid": "7kalSkc4z"
+                    },
+                    "expression": "fields concat(metadata.countryCode,'-',event_details.cdn) as cdn\n|filter event_type='cdn_metrics' and event_details.initiatorType='navigation' and metadata.countryCode in [${country:singlequote}]\n|stats count() as pageViews by cdn,bin(5m) as event_timestamp\n|display event_timestamp,cdn,pageViews",
+                    "hide": false,
+                    "id": "",
+                    "logGroupNames": [
+                        "${log_group}"
+                    ],
+                    "namespace": "",
+                    "queryMode": "Logs",
+                    "refId": "B",
+                    "region": "default",
+                    "statsGroups": [
+                        "cdn",
+                        "event_timestamp"
+                    ]
+                },
+                {
+                    "datasource": {
+                        "type": "cloudwatch",
+                        "uid": "7kalSkc4z"
+                    },
+                    "expression": "fields event_details.cdn as cdn\n|filter event_type='cdn_metrics' and event_details.initiatorType='navigation'\n|stats count() as pageViews by bin(5m) as event_timestamp,cdn\n|display event_timestamp,cdn,pageViews",
+                    "hide": false,
+                    "id": "",
+                    "logGroupNames": [
+                        "/aws/vendedlogs/RUMService_MultiCDNMonitorStack-rum3f52eb6e"
+                    ],
+                    "namespace": "",
+                    "queryMode": "Logs",
+                    "refId": "Global",
+                    "region": "default",
+                    "statsGroups": [
+                        "event_timestamp",
+                        "cdn"
+                    ]
+                }
+            ],
+            "title": "Total Page Views By CDN",
+            "transformations": [],
+            "type": "stat"
+        },
+        {
+            "collapsed": false,
+            "gridPos": {
+                "h": 1,
+                "w": 24,
+                "x": 0,
+                "y": 11
+            },
+            "id": 13,
+            "panels": [],
+            "title": "Pages",
+            "type": "row"
+        },
+        {
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "thresholds"
+                    },
+                    "displayName": "${__series.name}",
+                    "mappings": [],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            },
+                            {
+                                "color": "red",
+                                "value": 80
+                            }
+                        ]
+                    },
+                    "unit": "percentunit"
+                },
+                "overrides": [
+                    {
+                        "matcher": {
+                            "id": "byRegexp",
+                            "options": "/Akamai/"
+                        },
+                        "properties": [
+                            {
+                                "id": "color",
+                                "value": {
+                                    "fixedColor": "blue",
+                                    "mode": "fixed"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byRegexp",
+                            "options": "/Cloudfront/"
+                        },
+                        "properties": [
+                            {
+                                "id": "color",
+                                "value": {
+                                    "fixedColor": "green",
+                                    "mode": "fixed"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            "gridPos": {
+                "h": 8,
+                "w": 3,
+                "x": 0,
+                "y": 12
+            },
+            "id": 28,
+            "options": {
+                "colorMode": "value",
+                "graphMode": "none",
+                "justifyMode": "auto",
+                "orientation": "auto",
+                "reduceOptions": {
+                    "calcs": [
+                        "mean"
+                    ],
+                    "fields": "",
+                    "values": false
+                },
+                "textMode": "auto"
+            },
+            "pluginVersion": "8.4.7",
+            "targets": [
+                {
+                    "datasource": {
+                        "type": "cloudwatch",
+                        "uid": "7kalSkc4z"
+                    },
+                    "expression": "fields concat(metadata.countryCode,'-',event_details.cdn) as cdn\n|filter event_type='cdn_metrics' and metadata.countryCode in [${country:singlequote}] and event_details.initiatorType='navigation'\n|stats sum(event_details.cacheStatus='MISS') as cachemiss,sum(event_details.cacheStatus='HIT') as cachehit,cachehit/(cachemiss+cachehit) as chr by bin(5m) as event_timestamp,cdn\n|display  event_timestamp,cdn,chr",
+                    "id": "",
+                    "logGroupNames": [
+                        "${log_group}"
+                    ],
+                    "namespace": "",
+                    "queryMode": "Logs",
+                    "refId": "A",
+                    "region": "default",
+                    "statsGroups": [
+                        "event_timestamp",
+                        "cdn"
+                    ]
+                }
+            ],
+            "title": "Cache Hit Ratio (avg)",
+            "type": "stat"
+        },
+        {
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "thresholds"
+                    },
+                    "displayName": "${__series.name}",
+                    "mappings": [],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            },
+                            {
+                                "color": "red",
+                                "value": 80
+                            }
+                        ]
+                    },
+                    "unit": "percentunit"
+                },
+                "overrides": [
+                    {
+                        "matcher": {
+                            "id": "byRegexp",
+                            "options": "/Akamai/"
+                        },
+                        "properties": [
+                            {
+                                "id": "color",
+                                "value": {
+                                    "fixedColor": "blue",
+                                    "mode": "fixed"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byRegexp",
+                            "options": "/Cloudfront/"
+                        },
+                        "properties": [
+                            {
+                                "id": "color",
+                                "value": {
+                                    "fixedColor": "green",
+                                    "mode": "fixed"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            "gridPos": {
+                "h": 8,
+                "w": 3,
+                "x": 3,
+                "y": 12
+            },
+            "id": 33,
+            "options": {
+                "colorMode": "value",
+                "graphMode": "none",
+                "justifyMode": "auto",
+                "orientation": "auto",
+                "reduceOptions": {
+                    "calcs": [
+                        "mean"
+                    ],
+                    "fields": "",
+                    "values": false
+                },
+                "textMode": "auto"
+            },
+            "pluginVersion": "8.4.7",
+            "targets": [
+                {
+                    "datasource": {
+                        "type": "cloudwatch",
+                        "uid": "7kalSkc4z"
+                    },
+                    "expression": "fields concat(metadata.countryCode,'-',event_details.cdn) as cdn\n|filter event_type='cdn_metrics' and metadata.countryCode in [${country:singlequote}] and event_details.initiatorType='navigation'\n|stats avg(event_details.compressRate) as compression by bin(5m) as event_timestamp,cdn\n|filter compression>0\n|display event_timestamp,cdn,compression",
+                    "id": "",
+                    "logGroupNames": [
+                        "${log_group}"
+                    ],
+                    "namespace": "",
+                    "queryMode": "Logs",
+                    "refId": "A",
+                    "region": "default",
+                    "statsGroups": [
+                        "event_timestamp",
+                        "cdn"
+                    ]
+                }
+            ],
+            "title": "Compression Rate",
+            "type": "stat"
+        },
+        {
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "palette-classic"
+                    },
+                    "custom": {
+                        "axisLabel": "",
+                        "axisPlacement": "auto",
+                        "barAlignment": 0,
+                        "drawStyle": "line",
+                        "fillOpacity": 0,
+                        "gradientMode": "none",
+                        "hideFrom": {
+                            "legend": false,
+                            "tooltip": false,
+                            "viz": false
+                        },
+                        "lineInterpolation": "smooth",
+                        "lineWidth": 1,
+                        "pointSize": 5,
+                        "scaleDistribution": {
+                            "type": "linear"
+                        },
+                        "showPoints": "auto",
+                        "spanNulls": false,
+                        "stacking": {
+                            "group": "A",
+                            "mode": "none"
+                        },
+                        "thresholdsStyle": {
+                            "mode": "off"
+                        }
+                    },
+                    "displayName": "${__series.name}",
+                    "mappings": [],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            },
+                            {
+                                "color": "red",
+                                "value": 80
+                            }
+                        ]
+                    },
+                    "unit": "ms"
+                },
+                "overrides": [
+                    {
+                        "matcher": {
+                            "id": "byRegexp",
+                            "options": "/Akamai/"
+                        },
+                        "properties": [
+                            {
+                                "id": "color",
+                                "value": {
+                                    "fixedColor": "blue",
+                                    "mode": "fixed"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byRegexp",
+                            "options": "/Cloudfront/"
+                        },
+                        "properties": [
+                            {
+                                "id": "color",
+                                "value": {
+                                    "fixedColor": "green",
+                                    "mode": "fixed"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            "gridPos": {
+                "h": 8,
+                "w": 8,
+                "x": 6,
+                "y": 12
+            },
+            "id": 15,
+            "options": {
+                "legend": {
+                    "calcs": [],
+                    "displayMode": "list",
+                    "placement": "bottom"
+                },
+                "tooltip": {
+                    "mode": "single",
+                    "sort": "none"
+                }
+            },
+            "targets": [
+                {
+                    "datasource": {
+                        "type": "cloudwatch",
+                        "uid": "7kalSkc4z"
+                    },
+                    "expression": "fields concat(metadata.countryCode,'-',event_details.cdn) as cdn\n|filter event_type='cdn_metrics' and event_details.initiatorType='navigation' and metadata.countryCode in [${country:singlequote}]\n| stats pct(event_details.connectionTime,${percentile}) as connectionTime by bin(5m) as event_timestamp,cdn\n| display event_timestamp,cdn,connectionTime",
+                    "id": "",
+                    "logGroupNames": [
+                        "${log_group}"
+                    ],
+                    "namespace": "",
+                    "queryMode": "Logs",
+                    "refId": "A",
+                    "region": "default",
+                    "statsGroups": [
+                        "event_timestamp",
+                        "cdn"
+                    ]
+                }
+            ],
+            "title": "Page: TLS connect time (p${percentile})",
+            "type": "timeseries"
+        },
+        {
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "palette-classic"
+                    },
+                    "custom": {
+                        "axisLabel": "",
+                        "axisPlacement": "auto",
+                        "barAlignment": 0,
+                        "drawStyle": "line",
+                        "fillOpacity": 0,
+                        "gradientMode": "none",
+                        "hideFrom": {
+                            "legend": false,
+                            "tooltip": false,
+                            "viz": false
+                        },
+                        "lineInterpolation": "smooth",
+                        "lineWidth": 1,
+                        "pointSize": 5,
+                        "scaleDistribution": {
+                            "type": "linear"
+                        },
+                        "showPoints": "auto",
+                        "spanNulls": false,
+                        "stacking": {
+                            "group": "A",
+                            "mode": "none"
+                        },
+                        "thresholdsStyle": {
+                            "mode": "off"
+                        }
+                    },
+                    "displayName": "${__series.name}",
+                    "mappings": [],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            },
+                            {
+                                "color": "red",
+                                "value": 80
+                            }
+                        ]
+                    },
+                    "unit": "ms"
+                },
+                "overrides": [
+                    {
+                        "matcher": {
+                            "id": "byRegexp",
+                            "options": "/Akamai/"
+                        },
+                        "properties": [
+                            {
+                                "id": "color",
+                                "value": {
+                                    "fixedColor": "blue",
+                                    "mode": "fixed"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byRegexp",
+                            "options": "/Cloudfront/"
+                        },
+                        "properties": [
+                            {
+                                "id": "color",
+                                "value": {
+                                    "fixedColor": "green",
+                                    "mode": "fixed"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            "gridPos": {
+                "h": 8,
+                "w": 8,
+                "x": 14,
+                "y": 12
+            },
+            "id": 16,
+            "options": {
+                "legend": {
+                    "calcs": [],
+                    "displayMode": "list",
+                    "placement": "bottom"
+                },
+                "tooltip": {
+                    "mode": "single",
+                    "sort": "none"
+                }
+            },
+            "targets": [
+                {
+                    "datasource": {
+                        "type": "cloudwatch",
+                        "uid": "7kalSkc4z"
+                    },
+                    "expression": "fields concat(metadata.countryCode,'-',event_details.cdn) as cdn\n|filter event_type='cdn_metrics' and event_details.initiatorType='navigation' and event_details.metricType='TTFB' and metadata.countryCode in [${country:singlequote}]\n| stats pct(event_details.value,${percentile}) as ttfb by cdn,bin(1m) as event_timestamp\n| display event_timestamp, cdn, ttfb\n",
+                    "id": "",
+                    "logGroupNames": [
+                        "${log_group}"
+                    ],
+                    "namespace": "",
+                    "queryMode": "Logs",
+                    "refId": "A",
+                    "region": "default",
+                    "statsGroups": [
+                        "cdn",
+                        "event_timestamp"
+                    ]
+                }
+            ],
+            "title": "Page: Time to First Byte (p${percentile})",
+            "type": "timeseries"
+        },
+        {
+            "collapsed": false,
+            "gridPos": {
+                "h": 1,
+                "w": 24,
+                "x": 0,
+                "y": 20
+            },
+            "id": 6,
+            "panels": [],
+            "title": "Images",
+            "type": "row"
+        },
+        {
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "thresholds"
+                    },
+                    "displayName": "${__series.name}",
+                    "mappings": [],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            },
+                            {
+                                "color": "red",
+                                "value": 80
+                            }
+                        ]
+                    },
+                    "unit": "percentunit"
+                },
+                "overrides": [
+                    {
+                        "matcher": {
+                            "id": "byRegexp",
+                            "options": "/Akamai/"
+                        },
+                        "properties": [
+                            {
+                                "id": "color",
+                                "value": {
+                                    "fixedColor": "blue",
+                                    "mode": "fixed"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byRegexp",
+                            "options": "/Cloudfront/"
+                        },
+                        "properties": [
+                            {
+                                "id": "color",
+                                "value": {
+                                    "fixedColor": "green",
+                                    "mode": "fixed"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            "gridPos": {
+                "h": 8,
+                "w": 3,
+                "x": 0,
+                "y": 21
+            },
+            "id": 29,
+            "options": {
+                "colorMode": "value",
+                "graphMode": "none",
+                "justifyMode": "auto",
+                "orientation": "auto",
+                "reduceOptions": {
+                    "calcs": [
+                        "mean"
+                    ],
+                    "fields": "",
+                    "values": false
+                },
+                "textMode": "auto"
+            },
+            "pluginVersion": "8.4.7",
+            "targets": [
+                {
+                    "datasource": {
+                        "type": "cloudwatch",
+                        "uid": "7kalSkc4z"
+                    },
+                    "expression": "fields concat(metadata.countryCode,'-',event_details.cdn) as cdn\n|filter event_type='cdn_metrics' and metadata.countryCode in [${country:singlequote}] and event_details.initiatorType='img'\n|stats sum(event_details.cacheStatus='MISS') as cachemiss,sum(event_details.cacheStatus='HIT') as cachehit,cachehit/(cachemiss+cachehit) as chr by bin(5m) as event_timestamp,cdn\n|display  event_timestamp,cdn,chr",
+                    "id": "",
+                    "logGroupNames": [
+                        "${log_group}"
+                    ],
+                    "namespace": "",
+                    "queryMode": "Logs",
+                    "refId": "A",
+                    "region": "default",
+                    "statsGroups": [
+                        "event_timestamp",
+                        "cdn"
+                    ]
+                }
+            ],
+            "title": "Cache Hit Ratio (avg)",
+            "type": "stat"
+        },
+        {
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "palette-classic"
+                    },
+                    "custom": {
+                        "axisLabel": "",
+                        "axisPlacement": "auto",
+                        "barAlignment": 0,
+                        "drawStyle": "line",
+                        "fillOpacity": 0,
+                        "gradientMode": "none",
+                        "hideFrom": {
+                            "legend": false,
+                            "tooltip": false,
+                            "viz": false
+                        },
+                        "lineInterpolation": "smooth",
+                        "lineWidth": 1,
+                        "pointSize": 5,
+                        "scaleDistribution": {
+                            "type": "linear"
+                        },
+                        "showPoints": "auto",
+                        "spanNulls": false,
+                        "stacking": {
+                            "group": "A",
+                            "mode": "none"
+                        },
+                        "thresholdsStyle": {
+                            "mode": "off"
+                        }
+                    },
+                    "displayName": "${__series.name}",
+                    "mappings": [],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            },
+                            {
+                                "color": "red",
+                                "value": 80
+                            }
+                        ]
+                    },
+                    "unit": "ms"
+                },
+                "overrides": [
+                    {
+                        "matcher": {
+                            "id": "byRegexp",
+                            "options": "/Akamai/"
+                        },
+                        "properties": [
+                            {
+                                "id": "color",
+                                "value": {
+                                    "fixedColor": "blue",
+                                    "mode": "fixed"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byRegexp",
+                            "options": "/Cloudfront/"
+                        },
+                        "properties": [
+                            {
+                                "id": "color",
+                                "value": {
+                                    "fixedColor": "green",
+                                    "mode": "fixed"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            "gridPos": {
+                "h": 8,
+                "w": 8,
+                "x": 3,
+                "y": 21
+            },
+            "id": 2,
+            "options": {
+                "legend": {
+                    "calcs": [],
+                    "displayMode": "list",
+                    "placement": "bottom"
+                },
+                "tooltip": {
+                    "mode": "single",
+                    "sort": "none"
+                }
+            },
+            "targets": [
+                {
+                    "datasource": {
+                        "type": "cloudwatch",
+                        "uid": "7kalSkc4z"
+                    },
+                    "expression": "fields concat(metadata.countryCode,'-',event_details.cdn) as cdn\n|filter event_type='cdn_metrics' and event_details.initiatorType='img' and metadata.countryCode in [${country:singlequote}]\n| stats pct(event_details.connectionTime,${percentile}) as connectionTime by bin(5m) as event_timestamp,cdn\n| display event_timestamp,cdn,connectionTime",
+                    "id": "",
+                    "logGroupNames": [
+                        "${log_group}"
+                    ],
+                    "namespace": "",
+                    "queryMode": "Logs",
+                    "refId": "A",
+                    "region": "default",
+                    "statsGroups": [
+                        "event_timestamp",
+                        "cdn"
+                    ]
+                }
+            ],
+            "title": "Images: TLS connect time (p${percentile})",
+            "type": "timeseries"
+        },
+        {
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "palette-classic"
+                    },
+                    "custom": {
+                        "axisLabel": "",
+                        "axisPlacement": "auto",
+                        "barAlignment": 0,
+                        "drawStyle": "line",
+                        "fillOpacity": 0,
+                        "gradientMode": "none",
+                        "hideFrom": {
+                            "legend": false,
+                            "tooltip": false,
+                            "viz": false
+                        },
+                        "lineInterpolation": "smooth",
+                        "lineWidth": 1,
+                        "pointSize": 5,
+                        "scaleDistribution": {
+                            "type": "linear"
+                        },
+                        "showPoints": "auto",
+                        "spanNulls": false,
+                        "stacking": {
+                            "group": "A",
+                            "mode": "none"
+                        },
+                        "thresholdsStyle": {
+                            "mode": "off"
+                        }
+                    },
+                    "displayName": "${__series.name}",
+                    "mappings": [],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            },
+                            {
+                                "color": "red",
+                                "value": 80
+                            }
+                        ]
+                    },
+                    "unit": "ms"
+                },
+                "overrides": [
+                    {
+                        "matcher": {
+                            "id": "byRegexp",
+                            "options": "/Akamai/"
+                        },
+                        "properties": [
+                            {
+                                "id": "color",
+                                "value": {
+                                    "fixedColor": "blue",
+                                    "mode": "fixed"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byRegexp",
+                            "options": "/Cloudfront/"
+                        },
+                        "properties": [
+                            {
+                                "id": "color",
+                                "value": {
+                                    "fixedColor": "green",
+                                    "mode": "fixed"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            "gridPos": {
+                "h": 8,
+                "w": 9,
+                "x": 11,
+                "y": 21
+            },
+            "id": 10,
+            "options": {
+                "legend": {
+                    "calcs": [],
+                    "displayMode": "list",
+                    "placement": "bottom"
+                },
+                "tooltip": {
+                    "mode": "single",
+                    "sort": "none"
+                }
+            },
+            "targets": [
+                {
+                    "datasource": {
+                        "type": "cloudwatch",
+                        "uid": "7kalSkc4z"
+                    },
+                    "expression": "fields concat(metadata.countryCode,'-',event_details.cdn) as cdn\n|filter event_type='cdn_metrics' and event_details.initiatorType='img' and metadata.countryCode in [${country:singlequote}]\n| stats pct(event_details.requestTime,${percentile}) as ttfb by cdn,bin(5m) as event_timestamp\n| display event_timestamp, cdn, ttfb",
+                    "id": "",
+                    "logGroupNames": [
+                        "${log_group}"
+                    ],
+                    "namespace": "",
+                    "queryMode": "Logs",
+                    "refId": "A",
+                    "region": "default",
+                    "statsGroups": [
+                        "cdn",
+                        "event_timestamp"
+                    ]
+                }
+            ],
+            "title": "Images: Time to First Byte (p${percentile})",
+            "type": "timeseries"
+        },
+        {
+            "collapsed": false,
+            "gridPos": {
+                "h": 1,
+                "w": 24,
+                "x": 0,
+                "y": 29
+            },
+            "id": 9,
+            "panels": [],
+            "title": "Scripts",
+            "type": "row"
+        },
+        {
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "thresholds"
+                    },
+                    "displayName": "${__series.name}",
+                    "mappings": [],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            },
+                            {
+                                "color": "red",
+                                "value": 80
+                            }
+                        ]
+                    },
+                    "unit": "percentunit"
+                },
+                "overrides": [
+                    {
+                        "matcher": {
+                            "id": "byRegexp",
+                            "options": "/Akamai/"
+                        },
+                        "properties": [
+                            {
+                                "id": "color",
+                                "value": {
+                                    "fixedColor": "blue",
+                                    "mode": "fixed"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byRegexp",
+                            "options": "/Cloudfront/"
+                        },
+                        "properties": [
+                            {
+                                "id": "color",
+                                "value": {
+                                    "fixedColor": "green",
+                                    "mode": "fixed"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            "gridPos": {
+                "h": 8,
+                "w": 3,
+                "x": 0,
+                "y": 30
+            },
+            "id": 30,
+            "options": {
+                "colorMode": "value",
+                "graphMode": "none",
+                "justifyMode": "auto",
+                "orientation": "auto",
+                "reduceOptions": {
+                    "calcs": [
+                        "mean"
+                    ],
+                    "fields": "",
+                    "values": false
+                },
+                "textMode": "auto"
+            },
+            "pluginVersion": "8.4.7",
+            "targets": [
+                {
+                    "datasource": {
+                        "type": "cloudwatch",
+                        "uid": "7kalSkc4z"
+                    },
+                    "expression": "fields concat(metadata.countryCode,'-',event_details.cdn) as cdn\n|filter event_type='cdn_metrics' and metadata.countryCode in [${country:singlequote}] and (event_details.initiatorType='script' or event_details.initiatorType='other')\n|stats sum(event_details.cacheStatus='MISS') as cachemiss,sum(event_details.cacheStatus='HIT') as cachehit,cachehit/(cachemiss+cachehit) as chr by bin(5m) as event_timestamp,cdn\n|display  event_timestamp,cdn,chr",
+                    "id": "",
+                    "logGroupNames": [
+                        "${log_group}"
+                    ],
+                    "namespace": "",
+                    "queryMode": "Logs",
+                    "refId": "A",
+                    "region": "default",
+                    "statsGroups": [
+                        "event_timestamp",
+                        "cdn"
+                    ]
+                }
+            ],
+            "title": "Cache Hit Ratio (avg)",
+            "type": "stat"
+        },
+        {
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "thresholds"
+                    },
+                    "displayName": "${__series.name}",
+                    "mappings": [],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            },
+                            {
+                                "color": "red",
+                                "value": 80
+                            }
+                        ]
+                    },
+                    "unit": "percentunit"
+                },
+                "overrides": [
+                    {
+                        "matcher": {
+                            "id": "byRegexp",
+                            "options": "/Akamai/"
+                        },
+                        "properties": [
+                            {
+                                "id": "color",
+                                "value": {
+                                    "fixedColor": "blue",
+                                    "mode": "fixed"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byRegexp",
+                            "options": "/Cloudfront/"
+                        },
+                        "properties": [
+                            {
+                                "id": "color",
+                                "value": {
+                                    "fixedColor": "green",
+                                    "mode": "fixed"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            "gridPos": {
+                "h": 8,
+                "w": 3,
+                "x": 3,
+                "y": 30
+            },
+            "id": 34,
+            "options": {
+                "colorMode": "value",
+                "graphMode": "none",
+                "justifyMode": "auto",
+                "orientation": "auto",
+                "reduceOptions": {
+                    "calcs": [],
+                    "fields": "",
+                    "values": false
+                },
+                "textMode": "auto"
+            },
+            "pluginVersion": "8.4.7",
+            "targets": [
+                {
+                    "datasource": {
+                        "type": "cloudwatch",
+                        "uid": "7kalSkc4z"
+                    },
+                    "expression": "fields concat(metadata.countryCode,'-',event_details.cdn) as cdn\n|filter event_type='cdn_metrics' and metadata.countryCode in [${country:singlequote}] and (event_details.initiatorType='script' or event_details.initiatorType='other')\n|stats avg(event_details.compressRate) as compression by bin(5m) as event_timestamp,cdn\n|filter compression>0\n|display event_timestamp,cdn,compression",
+                    "id": "",
+                    "logGroupNames": [
+                        "${log_group}"
+                    ],
+                    "namespace": "",
+                    "queryMode": "Logs",
+                    "refId": "A",
+                    "region": "default",
+                    "statsGroups": [
+                        "event_timestamp",
+                        "cdn"
+                    ]
+                }
+            ],
+            "title": "Compression Rate",
+            "type": "stat"
+        },
+        {
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "palette-classic"
+                    },
+                    "custom": {
+                        "axisLabel": "",
+                        "axisPlacement": "auto",
+                        "barAlignment": 0,
+                        "drawStyle": "line",
+                        "fillOpacity": 0,
+                        "gradientMode": "none",
+                        "hideFrom": {
+                            "legend": false,
+                            "tooltip": false,
+                            "viz": false
+                        },
+                        "lineInterpolation": "smooth",
+                        "lineWidth": 1,
+                        "pointSize": 5,
+                        "scaleDistribution": {
+                            "type": "linear"
+                        },
+                        "showPoints": "auto",
+                        "spanNulls": false,
+                        "stacking": {
+                            "group": "A",
+                            "mode": "none"
+                        },
+                        "thresholdsStyle": {
+                            "mode": "off"
+                        }
+                    },
+                    "displayName": "${__series.name}",
+                    "mappings": [],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            },
+                            {
+                                "color": "red",
+                                "value": 80
+                            }
+                        ]
+                    },
+                    "unit": "ms"
+                },
+                "overrides": [
+                    {
+                        "matcher": {
+                            "id": "byRegexp",
+                            "options": "/Akamai/"
+                        },
+                        "properties": [
+                            {
+                                "id": "color",
+                                "value": {
+                                    "fixedColor": "blue",
+                                    "mode": "fixed"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byRegexp",
+                            "options": "/Cloudfront/"
+                        },
+                        "properties": [
+                            {
+                                "id": "color",
+                                "value": {
+                                    "fixedColor": "green",
+                                    "mode": "fixed"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            "gridPos": {
+                "h": 8,
+                "w": 8,
+                "x": 6,
+                "y": 30
+            },
+            "id": 11,
+            "options": {
+                "legend": {
+                    "calcs": [],
+                    "displayMode": "list",
+                    "placement": "bottom"
+                },
+                "tooltip": {
+                    "mode": "single",
+                    "sort": "none"
+                }
+            },
+            "targets": [
+                {
+                    "datasource": {
+                        "type": "cloudwatch",
+                        "uid": "7kalSkc4z"
+                    },
+                    "expression": "fields concat(metadata.countryCode,'-',event_details.cdn) as cdn\n|filter event_type='cdn_metrics' and (event_details.initiatorType='script' or event_details.initiatorType='other') and metadata.countryCode in [${country:singlequote}]\n| stats pct(event_details.connectionTime,${percentile}) as connectionTime by bin(5m) as event_timestamp,cdn\n| display event_timestamp,cdn,connectionTime",
+                    "id": "",
+                    "logGroupNames": [
+                        "${log_group}"
+                    ],
+                    "namespace": "",
+                    "queryMode": "Logs",
+                    "refId": "A",
+                    "region": "default",
+                    "statsGroups": [
+                        "event_timestamp",
+                        "cdn"
+                    ]
+                }
+            ],
+            "title": "Scripts: TLS connect time (p${percentile})",
+            "type": "timeseries"
+        },
+        {
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "palette-classic"
+                    },
+                    "custom": {
+                        "axisLabel": "",
+                        "axisPlacement": "auto",
+                        "barAlignment": 0,
+                        "drawStyle": "line",
+                        "fillOpacity": 0,
+                        "gradientMode": "none",
+                        "hideFrom": {
+                            "legend": false,
+                            "tooltip": false,
+                            "viz": false
+                        },
+                        "lineInterpolation": "smooth",
+                        "lineWidth": 1,
+                        "pointSize": 5,
+                        "scaleDistribution": {
+                            "type": "linear"
+                        },
+                        "showPoints": "auto",
+                        "spanNulls": false,
+                        "stacking": {
+                            "group": "A",
+                            "mode": "none"
+                        },
+                        "thresholdsStyle": {
+                            "mode": "off"
+                        }
+                    },
+                    "displayName": "${__series.name}",
+                    "mappings": [],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            },
+                            {
+                                "color": "red",
+                                "value": 80
+                            }
+                        ]
+                    },
+                    "unit": "ms"
+                },
+                "overrides": [
+                    {
+                        "matcher": {
+                            "id": "byRegexp",
+                            "options": "/Akamai/"
+                        },
+                        "properties": [
+                            {
+                                "id": "color",
+                                "value": {
+                                    "fixedColor": "blue",
+                                    "mode": "fixed"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byRegexp",
+                            "options": "/Cloudfront/"
+                        },
+                        "properties": [
+                            {
+                                "id": "color",
+                                "value": {
+                                    "fixedColor": "green",
+                                    "mode": "fixed"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            "gridPos": {
+                "h": 8,
+                "w": 8,
+                "x": 14,
+                "y": 30
+            },
+            "id": 3,
+            "options": {
+                "legend": {
+                    "calcs": [],
+                    "displayMode": "list",
+                    "placement": "bottom"
+                },
+                "tooltip": {
+                    "mode": "single",
+                    "sort": "none"
+                }
+            },
+            "targets": [
+                {
+                    "datasource": {
+                        "type": "cloudwatch",
+                        "uid": "7kalSkc4z"
+                    },
+                    "expression": "fields concat(metadata.countryCode,'-',event_details.cdn) as cdn\n|filter event_type='cdn_metrics' and (event_details.initiatorType='script' or event_details.initiatorType='other') and metadata.countryCode in [${country:singlequote}]\n| stats pct(event_details.requestTime,${percentile}) as ttfb by cdn,bin(5m) as event_timestamp\n| display event_timestamp, cdn, ttfb",
+                    "id": "",
+                    "logGroupNames": [
+                        "${log_group}"
+                    ],
+                    "namespace": "",
+                    "queryMode": "Logs",
+                    "refId": "A",
+                    "region": "default",
+                    "statsGroups": [
+                        "cdn",
+                        "event_timestamp"
+                    ]
+                }
+            ],
+            "title": "Scripts: Time to First Byte (p${percentile})",
+            "type": "timeseries"
+        },
+        {
+            "collapsed": false,
+            "gridPos": {
+                "h": 1,
+                "w": 24,
+                "x": 0,
+                "y": 38
+            },
+            "id": 19,
+            "panels": [],
+            "title": "CSS",
+            "type": "row"
+        },
+        {
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "thresholds"
+                    },
+                    "displayName": "${__series.name}",
+                    "mappings": [],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            },
+                            {
+                                "color": "red",
+                                "value": 80
+                            }
+                        ]
+                    },
+                    "unit": "percentunit"
+                },
+                "overrides": [
+                    {
+                        "matcher": {
+                            "id": "byRegexp",
+                            "options": "/Akamai/"
+                        },
+                        "properties": [
+                            {
+                                "id": "color",
+                                "value": {
+                                    "fixedColor": "blue",
+                                    "mode": "fixed"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byRegexp",
+                            "options": "/Cloudfront/"
+                        },
+                        "properties": [
+                            {
+                                "id": "color",
+                                "value": {
+                                    "fixedColor": "green",
+                                    "mode": "fixed"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            "gridPos": {
+                "h": 8,
+                "w": 3,
+                "x": 0,
+                "y": 39
+            },
+            "id": 31,
+            "options": {
+                "colorMode": "value",
+                "graphMode": "none",
+                "justifyMode": "auto",
+                "orientation": "auto",
+                "reduceOptions": {
+                    "calcs": [
+                        "mean"
+                    ],
+                    "fields": "",
+                    "values": false
+                },
+                "textMode": "auto"
+            },
+            "pluginVersion": "8.4.7",
+            "targets": [
+                {
+                    "datasource": {
+                        "type": "cloudwatch",
+                        "uid": "7kalSkc4z"
+                    },
+                    "expression": "fields concat(metadata.countryCode,'-',event_details.cdn) as cdn\n|filter event_type='cdn_metrics' and metadata.countryCode in [${country:singlequote}] and (event_details.initiatorType='link')\n|stats sum(event_details.cacheStatus='MISS') as cachemiss,sum(event_details.cacheStatus='HIT') as cachehit,cachehit/(cachemiss+cachehit) as chr by bin(5m) as event_timestamp,cdn\n|display  event_timestamp,cdn,chr",
+                    "id": "",
+                    "logGroupNames": [
+                        "${log_group}"
+                    ],
+                    "namespace": "",
+                    "queryMode": "Logs",
+                    "refId": "A",
+                    "region": "default",
+                    "statsGroups": [
+                        "event_timestamp",
+                        "cdn"
+                    ]
+                }
+            ],
+            "title": "Cache Hit Ratio (avg)",
+            "type": "stat"
+        },
+        {
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "thresholds"
+                    },
+                    "displayName": "${__series.name}",
+                    "mappings": [],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            },
+                            {
+                                "color": "red",
+                                "value": 80
+                            }
+                        ]
+                    },
+                    "unit": "percentunit"
+                },
+                "overrides": [
+                    {
+                        "matcher": {
+                            "id": "byRegexp",
+                            "options": "/Akamai/"
+                        },
+                        "properties": [
+                            {
+                                "id": "color",
+                                "value": {
+                                    "fixedColor": "blue",
+                                    "mode": "fixed"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byRegexp",
+                            "options": "/Cloudfront/"
+                        },
+                        "properties": [
+                            {
+                                "id": "color",
+                                "value": {
+                                    "fixedColor": "green",
+                                    "mode": "fixed"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            "gridPos": {
+                "h": 8,
+                "w": 3,
+                "x": 3,
+                "y": 39
+            },
+            "id": 35,
+            "options": {
+                "colorMode": "value",
+                "graphMode": "none",
+                "justifyMode": "auto",
+                "orientation": "auto",
+                "reduceOptions": {
+                    "calcs": [],
+                    "fields": "",
+                    "values": false
+                },
+                "textMode": "auto"
+            },
+            "pluginVersion": "8.4.7",
+            "targets": [
+                {
+                    "datasource": {
+                        "type": "cloudwatch",
+                        "uid": "7kalSkc4z"
+                    },
+                    "expression": "fields concat(metadata.countryCode,'-',event_details.cdn) as cdn\n|filter event_type='cdn_metrics' and metadata.countryCode in [${country:singlequote}] and (event_details.initiatorType='link')\n|stats avg(event_details.compressRate) as compression by bin(5m) as event_timestamp,cdn\n|filter compression>0\n|display event_timestamp,cdn,compression",
+                    "id": "",
+                    "logGroupNames": [
+                        "${log_group}"
+                    ],
+                    "namespace": "",
+                    "queryMode": "Logs",
+                    "refId": "A",
+                    "region": "default",
+                    "statsGroups": [
+                        "event_timestamp",
+                        "cdn"
+                    ]
+                }
+            ],
+            "title": "Compression Rate",
+            "type": "stat"
+        },
+        {
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "palette-classic"
+                    },
+                    "custom": {
+                        "axisLabel": "",
+                        "axisPlacement": "auto",
+                        "barAlignment": 0,
+                        "drawStyle": "line",
+                        "fillOpacity": 0,
+                        "gradientMode": "none",
+                        "hideFrom": {
+                            "legend": false,
+                            "tooltip": false,
+                            "viz": false
+                        },
+                        "lineInterpolation": "smooth",
+                        "lineWidth": 1,
+                        "pointSize": 5,
+                        "scaleDistribution": {
+                            "type": "linear"
+                        },
+                        "showPoints": "auto",
+                        "spanNulls": false,
+                        "stacking": {
+                            "group": "A",
+                            "mode": "none"
+                        },
+                        "thresholdsStyle": {
+                            "mode": "off"
+                        }
+                    },
+                    "displayName": "${__series.name}",
+                    "mappings": [],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            },
+                            {
+                                "color": "red",
+                                "value": 80
+                            }
+                        ]
+                    },
+                    "unit": "ms"
+                },
+                "overrides": [
+                    {
+                        "matcher": {
+                            "id": "byRegexp",
+                            "options": "/Akamai/"
+                        },
+                        "properties": [
+                            {
+                                "id": "color",
+                                "value": {
+                                    "fixedColor": "blue",
+                                    "mode": "fixed"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byRegexp",
+                            "options": "/Cloudfront/"
+                        },
+                        "properties": [
+                            {
+                                "id": "color",
+                                "value": {
+                                    "fixedColor": "green",
+                                    "mode": "fixed"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            "gridPos": {
+                "h": 8,
+                "w": 8,
+                "x": 6,
+                "y": 39
+            },
+            "id": 20,
+            "options": {
+                "legend": {
+                    "calcs": [],
+                    "displayMode": "list",
+                    "placement": "bottom"
+                },
+                "tooltip": {
+                    "mode": "single",
+                    "sort": "none"
+                }
+            },
+            "targets": [
+                {
+                    "datasource": {
+                        "type": "cloudwatch",
+                        "uid": "7kalSkc4z"
+                    },
+                    "expression": "fields concat(metadata.countryCode,'-',event_details.cdn) as cdn\n|filter event_type='cdn_metrics' and (event_details.initiatorType='link') and metadata.countryCode in [${country:singlequote}]\n| stats pct(event_details.connectionTime,${percentile}) as connectionTime by bin(5m) as event_timestamp,cdn\n| display event_timestamp,cdn,connectionTime",
+                    "id": "",
+                    "logGroupNames": [
+                        "${log_group}"
+                    ],
+                    "namespace": "",
+                    "queryMode": "Logs",
+                    "refId": "A",
+                    "region": "default",
+                    "statsGroups": [
+                        "event_timestamp",
+                        "cdn"
+                    ]
+                }
+            ],
+            "title": "CSS: TLS connect time (p${percentile})",
+            "type": "timeseries"
+        },
+        {
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "palette-classic"
+                    },
+                    "custom": {
+                        "axisLabel": "",
+                        "axisPlacement": "auto",
+                        "barAlignment": 0,
+                        "drawStyle": "line",
+                        "fillOpacity": 0,
+                        "gradientMode": "none",
+                        "hideFrom": {
+                            "legend": false,
+                            "tooltip": false,
+                            "viz": false
+                        },
+                        "lineInterpolation": "smooth",
+                        "lineWidth": 1,
+                        "pointSize": 5,
+                        "scaleDistribution": {
+                            "type": "linear"
+                        },
+                        "showPoints": "auto",
+                        "spanNulls": false,
+                        "stacking": {
+                            "group": "A",
+                            "mode": "none"
+                        },
+                        "thresholdsStyle": {
+                            "mode": "off"
+                        }
+                    },
+                    "displayName": "${__series.name}",
+                    "mappings": [],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            },
+                            {
+                                "color": "red",
+                                "value": 80
+                            }
+                        ]
+                    },
+                    "unit": "ms"
+                },
+                "overrides": [
+                    {
+                        "matcher": {
+                            "id": "byRegexp",
+                            "options": "/Akamai/"
+                        },
+                        "properties": [
+                            {
+                                "id": "color",
+                                "value": {
+                                    "fixedColor": "blue",
+                                    "mode": "fixed"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byRegexp",
+                            "options": "/Cloudfront/"
+                        },
+                        "properties": [
+                            {
+                                "id": "color",
+                                "value": {
+                                    "fixedColor": "green",
+                                    "mode": "fixed"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            "gridPos": {
+                "h": 8,
+                "w": 8,
+                "x": 14,
+                "y": 39
+            },
+            "id": 21,
+            "options": {
+                "legend": {
+                    "calcs": [],
+                    "displayMode": "list",
+                    "placement": "bottom"
+                },
+                "tooltip": {
+                    "mode": "single",
+                    "sort": "none"
+                }
+            },
+            "targets": [
+                {
+                    "datasource": {
+                        "type": "cloudwatch",
+                        "uid": "7kalSkc4z"
+                    },
+                    "expression": "fields concat(metadata.countryCode,'-',event_details.cdn) as cdn\n|filter event_type='cdn_metrics' and (event_details.initiatorType='link') and metadata.countryCode in [${country:singlequote}]\n| stats pct(event_details.requestTime,${percentile}) as ttfb by cdn,bin(5m) as event_timestamp\n| display event_timestamp, cdn, ttfb",
+                    "id": "",
+                    "logGroupNames": [
+                        "${log_group}"
+                    ],
+                    "namespace": "",
+                    "queryMode": "Logs",
+                    "refId": "A",
+                    "region": "default",
+                    "statsGroups": [
+                        "cdn",
+                        "event_timestamp"
+                    ]
+                }
+            ],
+            "title": "CSS: Time to First Byte (p${percentile})",
+            "type": "timeseries"
+        }
+    ],
+    "refresh": "",
+    "schemaVersion": 35,
+    "style": "dark",
+    "tags": [],
+    "templating": {
+        "list": [
+            {
+                "current": {
+                    "selected": true,
+                    "text": "US",
+                    "value": "US"
+                },
+                "hide": 0,
+                "includeAll": true,
+                "label": "Country",
+                "multi": false,
+                "name": "country",
+                "options": [
+                    {
+                        "selected": false,
+                        "text": "All",
+                        "value": "$__all"
+                    },
+                    {
+                        "selected": true,
+                        "text": "US",
+                        "value": "US"
+                    },
+                    {
+                        "selected": false,
+                        "text": "ES",
+                        "value": "ES"
+                    },
+                    {
+                        "selected": false,
+                        "text": "DK",
+                        "value": "DK"
+                    },
+                    {
+                        "selected": false,
+                        "text": "GB",
+                        "value": "GB"
+                    },
+                    {
+                        "selected": false,
+                        "text": "DE",
+                        "value": "DE"
+                    },
+                    {
+                        "selected": false,
+                        "text": "NL",
+                        "value": "NL"
+                    },
+                    {
+                        "selected": false,
+                        "text": "MX",
+                        "value": "MX"
+                    },
+                    {
+                        "selected": false,
+                        "text": "SE",
+                        "value": "SE"
+                    },
+                    {
+                        "selected": false,
+                        "text": "CA",
+                        "value": "CA"
+                    },
+                    {
+                        "selected": false,
+                        "text": "PL",
+                        "value": "PL"
+                    }
+                ],
+                "query": "US,ES, DK,GB, DE, NL,MX, SE,CA,PL",
+                "queryValue": "",
+                "skipUrlSync": false,
+                "type": "custom"
+            },
+            {
+                "current": {
+                    "selected": false,
+                    "text": "75",
+                    "value": "75"
+                },
+                "hide": 0,
+                "includeAll": false,
+                "multi": false,
+                "name": "percentile",
+                "options": [
+                    {
+                        "selected": false,
+                        "text": "10",
+                        "value": "10"
+                    },
+                    {
+                        "selected": false,
+                        "text": "50",
+                        "value": "50"
+                    },
+                    {
+                        "selected": true,
+                        "text": "75",
+                        "value": "75"
+                    },
+                    {
+                        "selected": false,
+                        "text": "90",
+                        "value": "90"
+                    },
+                    {
+                        "selected": false,
+                        "text": "95",
+                        "value": "95"
+                    },
+                    {
+                        "selected": false,
+                        "text": "99",
+                        "value": "99"
+                    }
+                ],
+                "query": "10,50,75,90,95,99",
+                "queryValue": "",
+                "skipUrlSync": false,
+                "type": "custom"
+            },
+            {
+                "hide": 2,
+                "name": "log_group",
+                "query": "/aws/vendedlogs/RUMService_MultiCDNMonitorStack-rum3f52eb6e",
+                "skipUrlSync": false,
+                "type": "constant"
+            }
+        ]
+    },
+    "time": {
+        "from": "now-6h",
+        "to": "now"
+    },
+    "timepicker": {},
+    "timezone": "",
+    "title": "CDN Comparison - Performance Metrics",
+    "uid": "1CuRJMKVz",
+    "version": 38,
+    "weekStart": ""
+}

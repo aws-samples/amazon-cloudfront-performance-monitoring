@@ -1,0 +1,73 @@
+<!--
+ Copyright 2020 Google LLC
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+     https://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+{% extends 'layout.njk' %}
+
+{% block content %}
+  <h1>CLS Test</h1>
+  {% if noLayoutShifts %}
+    <p id="p1">This text does not shift.</p>
+  {% else %}
+    <p id="p2">
+      <img id="img1" src="/test/img/square.png?delay=500" alt="Gray square" />
+      [text node contents]
+    </p>
+    <p id="p3"><img id="img3" src="/test/img/square.png?delay=1000" alt="Gray square" /></p>
+    <p id="p4">Text below the images that will get pushed down.</p>
+  {% endif %}
+
+  <p id="p5"><a id="navigate-away" href="https://example.com">Navigate away</a></p>
+
+  <script type="module">
+    import {onCLS} from '{{ modulePath }}';
+
+    function jsonifyNode(node) {
+      return node.id ? `#${node.id}` : node.nodeName.toLowerCase();
+    }
+
+    function jsonifySource(source) {
+      const node = jsonifyNode(source.node);
+      return {node, previousRect: source.previousRect, currentRect: source.currentRect};
+    }
+
+    function jsonifyEntry(entry) {
+      const {entryType, hadRecentInput, startTime, value} = entry;
+      const sources = entry.sources.map(jsonifySource);
+      return {entryType, hadRecentInput, sources, startTime, value};
+    }
+
+    onCLS((cls) => {
+      // Log for easier manual testing.
+      console.log(cls);
+
+      // Sources is verbose to serialize, so remove first.
+      cls = {
+        ...cls,
+        entries: cls.entries.map(jsonifyEntry),
+      };
+
+      if (cls.attribution) {
+        cls.attribution = Object.keys(cls.attribution).length ? {
+          ...cls.attribution,
+          largestShiftSource: jsonifySource(cls.attribution.largestShiftSource),
+          largestShiftEntry: jsonifyEntry(cls.attribution.largestShiftEntry),
+        } : {};
+      }
+
+      // Test sending the metric to an analytics endpoint.
+      navigator.sendBeacon(`/collect`, JSON.stringify(cls));
+    }, {reportAllChanges: self.__reportAllChanges});
+  </script>
+{% endblock %}

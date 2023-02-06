@@ -1,0 +1,192 @@
+{
+    "annotations": {
+        "list": [
+            {
+                "builtIn": 1,
+                "datasource": "-- Grafana --",
+                "enable": true,
+                "hide": true,
+                "iconColor": "rgba(0, 211, 255, 1)",
+                "name": "Annotations & Alerts",
+                "target": {
+                    "limit": 100,
+                    "matchAny": false,
+                    "tags": [],
+                    "type": "dashboard"
+                },
+                "type": "dashboard"
+            }
+        ]
+    },
+    "editable": true,
+    "fiscalYearStartMonth": 0,
+    "graphTooltip": 0,
+    "id": 4,
+    "iteration": 1674517056761,
+    "links": [],
+    "liveNow": false,
+    "panels": [
+        {
+            "datasource": {
+                "type": "datasource",
+                "uid": "-- Mixed --"
+            },
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "thresholds"
+                    },
+                    "custom": {
+                        "align": "auto",
+                        "displayMode": "auto"
+                    },
+                    "mappings": [],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            },
+                            {
+                                "color": "red",
+                                "value": 80
+                            }
+                        ]
+                    }
+                },
+                "overrides": [
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "cache_behavior_path_pattern C"
+                        },
+                        "properties": [
+                            {
+                                "id": "custom.width",
+                                "value": 199
+                            }
+                        ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "rid"
+                        },
+                        "properties": [
+                            {
+                                "id": "custom.width",
+                                "value": 545
+                            }
+                        ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "event_details.sthcdndownstreamfblduration"
+                        },
+                        "properties": [
+                            {
+                                "id": "custom.width",
+                                "value": 254
+                            }
+                        ]
+                    }
+                ]
+            },
+            "gridPos": {
+                "h": 10,
+                "w": 22,
+                "x": 0,
+                "y": 0
+            },
+            "id": 3,
+            "options": {
+                "footer": {
+                    "fields": "",
+                    "reducer": [
+                        "sum"
+                    ],
+                    "show": false
+                },
+                "frameIndex": 1,
+                "showHeader": true,
+                "sortBy": []
+            },
+            "pluginVersion": "8.4.7",
+            "targets": [
+                {
+                    "datasource": {
+                        "type": "cloudwatch",
+                        "uid": "7kalSkc4z"
+                    },
+                    "expression": "fields event_details.sthcdnrid as rid\n|filter event_details.sthcdnpop in [${pop:singlequote}]\n|display rid,event_details.sthcdnpop,event_details.sthcdndownstreamfblduration,event_timestamp",
+                    "hide": false,
+                    "id": "",
+                    "logGroupNames": [
+                        "${log_group}"
+                    ],
+                    "namespace": "",
+                    "queryMode": "Logs",
+                    "refId": "B",
+                    "region": "default",
+                    "statsGroups": []
+                },
+                {
+                    "connectionArgs": {
+                        "catalog": "__default",
+                        "database": "__default",
+                        "region": "__default"
+                    },
+                    "datasource": {
+                        "uid": "T2kYlvcVk"
+                    },
+                    "format": 1,
+                    "hide": false,
+                    "rawSQL": "select origin_fbl,c_ip,cs_host,x_edge_request_id as rid,asn from rtlogs2 WHERE dt between $__rawTimeFrom('yyyy-MM-dd-HH') and $__rawTimeTo('yyyy-MM-dd-HH') and x_edge_location='${pop}';",
+                    "refId": "C"
+                }
+            ],
+            "title": "Panel Title",
+            "transformations": [
+                {
+                    "id": "merge",
+                    "options": {}
+                }
+            ],
+            "type": "table"
+        }
+    ],
+    "refresh": false,
+    "schemaVersion": 35,
+    "style": "dark",
+    "tags": [],
+    "templating": {
+        "list": [
+            {
+                "hide": 2,
+                "name": "pop",
+                "query": "",
+                "skipUrlSync": false,
+                "type": "constant"
+            },
+            {
+                "hide": 2,
+                "name": "log_group",
+                "query": "/aws/vendedlogs/RUMService_CloudFrontMonitoringStack-rum7f414c06",
+                "skipUrlSync": false,
+                "type": "constant"
+            }
+        ]
+    },
+    "time": {
+        "from": "2023-01-22T23:36:42.165Z",
+        "to": "2023-01-23T23:36:42.165Z"
+    },
+    "timepicker": {},
+    "timezone": "",
+    "title": "Troubleshooting",
+    "uid": "a295mKTVk",
+    "version": 14,
+    "weekStart": ""
+}

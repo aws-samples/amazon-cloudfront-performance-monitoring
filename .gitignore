@@ -1,0 +1,4 @@
+cdk/node_modules
+web-vitals/node_modules
+web-vitals/dist
+cdk/src/cloudfront-functions/viewer-response/index.js

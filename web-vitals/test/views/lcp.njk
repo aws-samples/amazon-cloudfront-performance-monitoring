@@ -1,0 +1,60 @@
+<!--
+ Copyright 2020 Google LLC
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+     https://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+{% extends 'layout.njk' %}
+
+{% block content %}
+  <h1>LCP Test</h1>
+  <p>
+    {% if not imgDelay %}
+      {% set imgDelay = 500 %}
+    {% endif %}
+    <img {% if imgHidden %}hidden{% endif %} src="/test/img/square.png?delay={{ imgDelay }}">
+  </p>
+  <p>Text below the image</p>
+
+  <p><a id="navigate-away" href="https://example.com">Navigate away</a></p>
+
+  <!-- Include a tall element to ensure scrolling is possible. -->
+  <div style="height: 100vh"></div>
+
+  <footer>Text below the full-height element.</footer>
+
+  <script type="module">
+    import {onLCP} from '{{ modulePath }}';
+
+    function jsonifyEntry(entry) {
+      return {
+        element: entry.element.nodeName.toLowerCase(),
+        size: entry.size,
+        startTime: entry.startTime,
+      };
+    }
+
+    onLCP((lcp) => {
+      // Log for easier manual testing.
+      console.log(lcp);
+
+      // Elements can't be serialized, so we convert first.
+      lcp.entries = lcp.entries.map(jsonifyEntry);
+
+      if (lcp.attribution && lcp.attribution.lcpEntry) {
+        lcp.attribution.lcpEntry = jsonifyEntry(lcp.attribution.lcpEntry);
+      }
+
+      // Test sending the metric to an analytics endpoint.
+      navigator.sendBeacon(`/collect`, JSON.stringify(lcp));
+    }, {reportAllChanges: self.__reportAllChanges});
+  </script>
+{% endblock %}
