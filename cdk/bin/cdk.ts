@@ -28,6 +28,7 @@ const stackName = "CloudFrontMonitoringStackv1";
 const cfMonitorStack = new CdkStack(app, stackName, {
   env: { account: process.env.CDK_DEPLOY_ACCOUNT || process.env.CDK_DEFAULT_ACCOUNT, region: process.env.CDK_DEPLOY_REGION || process.env.CDK_DEFAULT_REGION },
   terminationProtection: true,
+  description: "Reference recipe to implement performance monitoring using Amazon CloudFront and CloudWatch RUM ('uksb-1tsbnei5d')",
   // hostedZoneId: process.env.HOSTEDZONE_ID,
   // domainName: process.env.DOMAIN_NAME,
   monitorDomainName: process.env.MONITOR_DOMAIN_NAME,
