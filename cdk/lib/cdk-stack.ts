@@ -29,12 +29,14 @@ import * as grafana from 'aws-cdk-lib/aws-grafana';
 import { NagSuppressions } from 'cdk-nag';
 import * as cr from 'aws-cdk-lib/custom-resources';
 import * as cloudfront from 'aws-cdk-lib/aws-cloudfront';
+import { CloudwatchRumConstruct } from './cw-rum-construct';
 
 export interface CdkStackProps extends StackProps {
   // hostedZoneId: any;
   domainName: any;
   monitorDomainName: any;
   profile: any;
+  sampleRate?: string;
   // deployStaging: boolean;
   // deployMultiCDN: boolean;
 };
@@ -84,72 +86,78 @@ export class CdkStack extends cdk.Stack {
     let envStage = "stage";
     this.createResponseHeaderPolicy("default", envStage);
 
-    let identityPool = new cognito.CfnIdentityPool(this, 'rum-idp', {
-      identityPoolName: `${Stack.of(this).stackName}-rum-idp`,
-      allowUnauthenticatedIdentities: true,
-      allowClassicFlow: true,
+    let rumMonitorName = `${Stack.of(this).stackName}-cwrum`;
+
+    const cloudwatchRum = new CloudwatchRumConstruct(this, rumMonitorName, {
+      monitorDomain: props?.monitorDomainName,
+      sampleRate: Number(props?.sampleRate),
+      telemetries: ['errors', 'http'],
     });
 
-    NagSuppressions.addResourceSuppressions(identityPool, [
-      {
-        id: 'AwsSolutions-COG7',
-        reason: 'CloudWatch RUM needs Cognito Identity Pool with unauthenticated access',
-      },
-    ]);
+    // let identityPool = new cognito.CfnIdentityPool(this, 'rum-idp', {
+    //   identityPoolName: `${Stack.of(this).stackName}-rum-idp`,
+    //   allowUnauthenticatedIdentities: true,
+    //   allowClassicFlow: true,
+    // });
 
-    let rumMonitorName = `${Stack.of(this).stackName}-rum`;
+    // NagSuppressions.addResourceSuppressions(identityPool, [
+    //   {
+    //     id: 'AwsSolutions-COG7',
+    //     reason: 'CloudWatch RUM needs Cognito Identity Pool with unauthenticated access',
+    //   },
+    // ]);
 
-    let idpRole = new iam.Role(this, "idp-role", {
-      assumedBy: new iam.FederatedPrincipal('cognito-identity.amazonaws.com'),
-      inlinePolicies: {
-        customPolicy1: new iam.PolicyDocument({
-          statements: [
-            new iam.PolicyStatement({
-              resources: [`arn:aws:rum:${Stack.of(this).region}:${Stack.of(this).account}:appmonitor/${rumMonitorName}`],
-              actions: ["rum:PutRumEvents"],
-            }),
-          ]
-        }),
-      },
-    });
 
-    idpRole.assumeRolePolicy?.addStatements(
-      new iam.PolicyStatement({
-        actions: ['sts:AssumeRoleWithWebIdentity'],
-        principals: [new iam.FederatedPrincipal('cognito-identity.amazonaws.com')],
-        conditions:
-        {
-          "StringEquals": {
-            "cognito-identity.amazonaws.com:aud": identityPool.ref
-          },
-          "ForAnyValue:StringLike": {
-            "cognito-identity.amazonaws.com:amr": "unauthenticated"
-          }
-        }
-      })
-    );
+    // let idpRole = new iam.Role(this, "idp-role", {
+    //   assumedBy: new iam.FederatedPrincipal('cognito-identity.amazonaws.com'),
+    //   inlinePolicies: {
+    //     customPolicy1: new iam.PolicyDocument({
+    //       statements: [
+    //         new iam.PolicyStatement({
+    //           resources: [`arn:aws:rum:${Stack.of(this).region}:${Stack.of(this).account}:appmonitor/${rumMonitorName}`],
+    //           actions: ["rum:PutRumEvents"],
+    //         }),
+    //       ]
+    //     }),
+    //   },
+    // });
 
-    new cognito.CfnIdentityPoolRoleAttachment(this, "idp-role-attachment", {
-      identityPoolId: identityPool.ref,
-      roles: {
-        'unauthenticated': idpRole.roleArn,
-      }
-    });
+    // idpRole.assumeRolePolicy?.addStatements(
+    //   new iam.PolicyStatement({
+    //     actions: ['sts:AssumeRoleWithWebIdentity'],
+    //     principals: [new iam.FederatedPrincipal('cognito-identity.amazonaws.com')],
+    //     conditions:
+    //     {
+    //       "StringEquals": {
+    //         "cognito-identity.amazonaws.com:aud": identityPool.ref
+    //       },
+    //       "ForAnyValue:StringLike": {
+    //         "cognito-identity.amazonaws.com:amr": "unauthenticated"
+    //       }
+    //     }
+    //   })
+    // );
 
-    let cfnAppMonitor = new rum.CfnAppMonitor(this, 'rum', {
-      domain: props?.monitorDomainName,
-      name: rumMonitorName,
-      appMonitorConfiguration: {
-        allowCookies: true,
-        identityPoolId: identityPool.ref,
+    // new cognito.CfnIdentityPoolRoleAttachment(this, "idp-role-attachment", {
+    //   identityPoolId: identityPool.ref,
+    //   roles: {
+    //     'unauthenticated': idpRole.roleArn,
+    //   }
+    // });
 
-        sessionSampleRate: 1,
-        telemetries: ['http', 'errors'],
-      },
-      cwLogEnabled: true,
-    });
+    // let cfnAppMonitor = new rum.CfnAppMonitor(this, 'rum', {
+    //   domain: props?.monitorDomainName,
+    //   name: rumMonitorName,
+    //   appMonitorConfiguration: {
+    //     allowCookies: true,
+    //     identityPoolId: identityPool.ref,
+    //     sessionSampleRate: 0.1,
+    //     telemetries: ['http', 'errors'],
+    //   },
+    //   cwLogEnabled: true,
+    // });
 
-    this.setCustomEventsEnabled(cfnAppMonitor, true);
+    // this.setCustomEventsEnabled(cfnAppMonitor, true);
     this.createGrafanaWorkspace();
   }
 

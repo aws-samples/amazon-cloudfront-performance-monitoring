@@ -23,7 +23,7 @@ import { AwsSolutionsChecks } from 'cdk-nag';
 
 const app = new cdk.App();
 // const stackName = "MultiCDNMonitorStack";
-const stackName = "CloudFrontMonitoringStackv1";
+const stackName = "CloudFrontMonitoringStack";
 
 const cfMonitorStack = new CdkStack(app, stackName, {
   env: { account: process.env.CDK_DEPLOY_ACCOUNT || process.env.CDK_DEFAULT_ACCOUNT, region: process.env.CDK_DEPLOY_REGION || process.env.CDK_DEFAULT_REGION },
@@ -32,6 +32,7 @@ const cfMonitorStack = new CdkStack(app, stackName, {
   // hostedZoneId: process.env.HOSTEDZONE_ID,
   // domainName: process.env.DOMAIN_NAME,
   monitorDomainName: process.env.MONITOR_DOMAIN_NAME,
+  sampleRate: process.env.SAMPLE_RATE,
   // deployStaging: process.env.DEPLOY_STAGING == "TRUE" ? true : false,
   // deployMultiCDN: process.env.DEPLOY_MULTICDN == "TRUE" ? true : false,
 } as CdkStackProps);
