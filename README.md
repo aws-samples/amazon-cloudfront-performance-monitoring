@@ -22,7 +22,7 @@ CloudFront, CloudWatch RUM, CloudWatch Logs, Amazon Grafana, AWS Identity Center
 1. Clone the repository into AWS Region where CloudWatch RUM is available.
 
 1. Change into the directory and run below commands
-    - `cd performance_monitoring/cdk`
+    - `cd amazon-cloudfront-performance-monitoring/cdk`
 
 1. Edit `deploy.sh` to update the deployment variables
 ```
