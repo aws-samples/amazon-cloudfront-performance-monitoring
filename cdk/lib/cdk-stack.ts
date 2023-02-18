@@ -30,6 +30,12 @@ import { NagSuppressions } from 'cdk-nag';
 import * as cr from 'aws-cdk-lib/custom-resources';
 import * as cloudfront from 'aws-cdk-lib/aws-cloudfront';
 import { CloudwatchRumConstruct } from './cw-rum-construct';
+import * as tasks from 'aws-cdk-lib/aws-stepfunctions-tasks';
+import * as sfn from 'aws-cdk-lib/aws-stepfunctions';
+import * as lambda from 'aws-cdk-lib/aws-lambda';
+import * as logs from 'aws-cdk-lib/aws-logs';
+import { EventbridgeToStepfunctions, EventbridgeToStepfunctionsProps } from '@aws-solutions-constructs/aws-eventbridge-stepfunctions';
+import * as events from 'aws-cdk-lib/aws-events';
 
 export interface CdkStackProps extends StackProps {
   // hostedZoneId: any;
@@ -93,6 +99,147 @@ export class CdkStack extends cdk.Stack {
       sampleRate: Number(props?.sampleRate),
       telemetries: ['errors', 'http'],
     });
+
+    let datetimeConverterFunction = new lambda.Function(this, "DatetimeConverterFunction", {
+      runtime: lambda.Runtime.NODEJS_18_X,
+      memorySize: 128,
+      architecture: lambda.Architecture.ARM_64,
+      handler: 'index.handler',
+      code: lambda.Code.fromAsset(path.join(__dirname, '../src/lambda-functions/datetime-converter/')),
+    });
+
+    const submitJob = new tasks.LambdaInvoke(this, 'Submit Job', {
+      lambdaFunction: datetimeConverterFunction,
+      // payload: sfn.TaskInput.fromJsonPathAt('$$.Execution.StartTime'),
+      resultPath: "$",
+    });
+
+    const waitX = new sfn.Wait(this, 'Wait X Seconds', {
+      time: sfn.WaitTime.duration(cdk.Duration.seconds(10)),
+    });
+
+    const cwlogQuery = new tasks.CallAwsService(this, 'cwlogQuery', {
+      service: 'cloudwatchlogs',
+      action: 'startQuery',
+      parameters: {
+        StartTime: sfn.JsonPath.numberAt('$.Payload.startTime'),
+        EndTime: sfn.JsonPath.numberAt('$.Payload.endTime'),
+        LogGroupName: cloudwatchRum.appMonitorCWLogGroup,
+        QueryString: "fields metadata.countryCode as cc|stats count_distinct(cc) as count by cc |display cc|limit 20",
+      },
+      additionalIamStatements: [new iam.PolicyStatement({
+        resources: ["*"],
+        actions: [
+          "logs:StartQuery",
+        ]
+      })],
+      iamResources: ["*"]
+    });
+
+    let extractCountryCodesFunction = new lambda.Function(this, "ExtractCountriesFunction", {
+      runtime: lambda.Runtime.NODEJS_18_X,
+      memorySize: 128,
+      architecture: lambda.Architecture.ARM_64,
+      handler: 'index.handler',
+      code: lambda.Code.fromAsset(path.join(__dirname, '../src/lambda-functions/extract-countries/')),
+    });
+
+    const cwlogQueryResults = new tasks.CallAwsService(this, 'cwlogQueryResults', {
+      service: 'cloudwatchlogs',
+      action: 'getQueryResults',
+      parameters: {
+        QueryId: sfn.JsonPath.stringAt('$.QueryId'),
+      },
+      inputPath: "$",
+      resultSelector: {
+        cc: sfn.TaskInput.fromJsonPathAt('$.Results'),
+      },
+      additionalIamStatements: [new iam.PolicyStatement({
+        resources: ["*"],
+        actions: [
+          "logs:GetQueryResults",
+        ]
+      })],
+      iamResources: ["*"]
+    });
+
+    const extractCountryJob = new tasks.LambdaInvoke(this, 'Extract Country Codes', {
+      lambdaFunction: extractCountryCodesFunction,
+      payload: sfn.TaskInput.fromJsonPathAt('$'),
+      outputPath: "$.Payload",
+    });
+
+    const map = new sfn.Map(this, 'Map State', {
+      maxConcurrency: 1,
+      itemsPath: '$.dimensions',
+    });
+
+    const putCWMetric = new tasks.CallAwsService(this, 'putCWMetric', {
+      service: 'cloudwatch',
+      action: 'putMetricData',
+      parameters: {
+        MetricData: [
+          {
+            "MetricName": "CountryCodes",
+            "Dimensions.$": '$',
+            "Value": 1
+          }
+        ],
+        "Namespace": "Custom/RUM"
+      },
+      additionalIamStatements: [new iam.PolicyStatement({
+        resources: ["*"],
+        actions: [
+          "cloudwatch:PutMetricData",
+        ]
+      })],
+      iamResources: ["*"]
+    });
+
+    map.iterator(putCWMetric);
+
+    const definition = submitJob
+      .next(cwlogQuery)
+      .next(waitX)
+      .next(cwlogQueryResults)
+      .next(extractCountryJob)
+      .next(map)
+
+    // .(jobSuccess);
+
+    const logGroup = new logs.LogGroup(this, 'FindCountriesLogGroup');
+
+    // let findCountriesWorkflow = new sfn.StateMachine(this, 'FindCountries', {
+    //   definition,
+    //   timeout: cdk.Duration.minutes(5),
+    //   logs: {
+    //     destination: logGroup,
+    //     level: sfn.LogLevel.ALL,
+    //   },
+    // });
+
+    const constructProps: EventbridgeToStepfunctionsProps = {
+      stateMachineProps: {
+        definition: definition,
+        timeout: cdk.Duration.minutes(5),
+        logs: {
+          destination: logGroup,
+          level: sfn.LogLevel.ALL,
+        },
+      },
+      eventRuleProps: {
+        schedule: events.Schedule.rate(cdk.Duration.minutes(60))
+      }
+    };
+
+    const eventBridgeStepFunction = new EventbridgeToStepfunctions(this, 'FindCountries', constructProps);
+
+    NagSuppressions.addResourceSuppressions(eventBridgeStepFunction.stateMachine, [
+      {
+        id: 'AwsSolutions-SF2',
+        reason: 'This workflow fetches the recent country list from CloudWatch Logs.',
+      },
+    ]);
 
     // let identityPool = new cognito.CfnIdentityPool(this, 'rum-idp', {
     //   identityPoolName: `${Stack.of(this).stackName}-rum-idp`,

@@ -40,6 +40,7 @@ export class CloudwatchRumConstruct extends Construct {
     public readonly rumMonitor: cwrum.CfnAppMonitor;
     public readonly identityPoolId: string;
     public readonly appMonitorId: string;
+    public readonly appMonitorCWLogGroup: string;
     private rumMonitorArn: string;
 
     constructor(scope: Construct, id: string, props: CloudwatchRUMProps) {
@@ -48,7 +49,9 @@ export class CloudwatchRumConstruct extends Construct {
         this.rumMonitorArn = `arn:aws:rum:${Stack.of(this).region}:${Stack.of(this).account}:appmonitor/${id}`;
         this.identityPoolId = this.createIdentityPool(id);
         this.rumMonitor = this.createRumMonitor(id, props);
-        this.appMonitorId = this.getAppMonitorId(this.rumMonitor.ref);
+        let cwRUM = this.getAppMonitorId(this.rumMonitor.ref);
+        this.appMonitorId = cwRUM[0];
+        this.appMonitorCWLogGroup = cwRUM[1];
         this.enableCustomEvents(this.rumMonitor);
     }
 
@@ -70,7 +73,7 @@ export class CloudwatchRumConstruct extends Construct {
         return monitor;
     }
 
-    private getAppMonitorId(physicalResourceId: string): string {
+    private getAppMonitorId(physicalResourceId: string): string[] {
         const awsRUMSDKCall: cr.AwsSdkCall = {
             service: 'RUM',
             action: 'getAppMonitor',
@@ -89,8 +92,10 @@ export class CloudwatchRumConstruct extends Construct {
         });
 
         customResource.node.addDependency(this.rumMonitor);
-
-        return customResource.getResponseField('AppMonitor.Id');
+        let response = []
+        response.push(customResource.getResponseField('AppMonitor.Id'));
+        response.push(customResource.getResponseField('AppMonitor.DataStorage.CwLog.CwLogGroup'))
+        return response;
     }
 
     private enableCustomEvents(appMonitor: cwrum.CfnAppMonitor) {

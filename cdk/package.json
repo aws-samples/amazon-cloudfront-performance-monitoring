@@ -15,7 +15,7 @@
     "@types/jest": "^27.5.2",
     "@types/node": "10.17.27",
     "@types/prettier": "2.6.0",
-    "aws-cdk": "^2.60.0",
+    "aws-cdk": "^2.64.0",
     "jest": "^27.5.1",
     "ts-jest": "^27.1.4",
     "ts-node": "^10.9.1",
@@ -23,7 +23,8 @@
   },
   "dependencies": {
     "@aws-cdk/aws-grafana": "^1.183.0",
-    "aws-cdk-lib": "2.60.0",
+    "@aws-solutions-constructs/aws-eventbridge-stepfunctions": "^2.32.0",
+    "aws-cdk-lib": "2.64.0",
     "cdk-nag": "^2.21.57",
     "constructs": "^10.0.0",
     "source-map-support": "^0.5.21"
