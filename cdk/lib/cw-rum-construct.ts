@@ -68,7 +68,7 @@ export class CloudwatchRumConstruct extends Construct {
                 identityPoolId: this.identityPoolId,
             },
             cwLogEnabled: true,
-            domain: monitorDomain
+            domain: monitorDomain,
         });
         return monitor;
     }

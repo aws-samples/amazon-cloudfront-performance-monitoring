@@ -122,7 +122,7 @@ A sample HTML page can be found
 9. In the CloudWatch data source configuration page. select the ‘Default Region’ where you deployed your application. Click ‘Save & test’ once done.
 ![Grafana](/images/grafana7.jpg)
 
-10. Download ‘assets/grafana.json’ file from the repository. Edit in your favorite editor and replace at line 3592 the Cloudwatch log group name we noted in the CloudWatch RUM section. Save the file.
+10. Download ‘assets/basic.json’ file from the repository. Edit in your favorite editor and replace at line 3592 the Cloudwatch log group name we noted in the CloudWatch RUM section. Save the file.
 
 11. From Grafanaleft hand menu, move to ‘+’ → Import 
 ![Grafana](/images/grafana8.jpg)
@@ -145,6 +145,10 @@ and click *‘Import’*
 - Click 'Update' and 'Save dashboard' to save the changes.
 ![Grafana](/images/grafana14.jpg)
 
+15. Access the website a few times so it can start capturing client side events.
+
+Note: The dashboard allows you to filter the view by countries. Today, within Grafana there is no support to query CloudWatch logs groups and populate dashboard variables.As a work around, a StepFunction workflow is scheduled to run every 1 hr to fetch the most recent list of 20 countries from the CloudWatch Logs. 
+You can find the scheduler created in EventBridge and study the flow from their. The list of countries are populated into CloudWatch metric namespace 'Custom/RUM'. Modify the scripts accordingly to change this behavior or you can hardcode the country list in the dashboard.
 
 Check to see the dashboard panels show up. Note, data may not be present initially.
 
