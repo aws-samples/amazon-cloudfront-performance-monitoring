@@ -51,7 +51,7 @@ export class CloudwatchRumConstruct extends Construct {
         this.rumMonitor = this.createRumMonitor(id, props);
         let cwRUM = this.getAppMonitorId(this.rumMonitor.ref);
         this.appMonitorId = cwRUM[0];
-        this.appMonitorCWLogGroup = cwRUM[1];
+        this.appMonitorCWLogGroup = cwRUM[1]
         this.enableCustomEvents(this.rumMonitor);
     }
 
