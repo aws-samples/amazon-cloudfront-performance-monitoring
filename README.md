@@ -122,7 +122,7 @@ A sample HTML page can be found
 9. In the CloudWatch data source configuration page. select the ‘Default Region’ where you deployed your application. Click ‘Save & test’ once done.
 ![Grafana](/images/grafana7.jpg)
 
-10. Download ‘assets/basic.json’ file from the repository. Edit in your favorite editor and replace at line 3796 the Cloudwatch log group name we noted in the CloudWatch RUM section. Save the file.
+10. Download ‘assets/basic.json’ file from the repository. Edit in your favorite editor and replace at line 3736 the Cloudwatch log group name we noted in the CloudWatch RUM section. Save the file.
 
 11. From Grafana's left hand menu, move to ‘+’ → Import 
 ![Grafana](/images/grafana8.jpg)

@@ -22,7 +22,7 @@
     "fiscalYearStartMonth": 0,
     "graphTooltip": 0,
     "id": 7,
-    "iteration": 1676730938855,
+    "iteration": 1676818010076,
     "links": [],
     "liveNow": false,
     "panels": [
@@ -46,7 +46,6 @@
                         "mode": "thresholds"
                     },
                     "decimals": 0,
-                    "displayName": "${__series.name}",
                     "mappings": [],
                     "max": 1,
                     "min": 0,
@@ -127,7 +126,7 @@
                         "mean"
                     ],
                     "fields": "",
-                    "values": false
+                    "values": true
                 },
                 "textMode": "auto"
             },
@@ -138,7 +137,7 @@
                         "type": "cloudwatch",
                         "uid": "7kalSkc4z"
                     },
-                    "expression": "fields event_details.env as env1\n|filter event_type='cdn_metrics' and (event_details.metricType='TTFB' or event_details.metricType='RESOURCE') and event_details.env in [${environment:singlequote}] and metadata.countryCode in [${country:singlequote}] \n|stats greatest(0,count(event_details.sthcdncachemiss)) as cachemiss,greatest(0,count(event_details.sthcdncachehit)) as cachehit,greatest(0,count(event_details.sthcdncacherefresh)) as cacherefreshhit,(cachehit+cacherefreshhit)/(cachemiss+cachehit+cacherefreshhit) as chr by bin(5m) as event_timestamp,env1\n|display event_timestamp,env1,chr",
+                    "expression": "fields event_details.env as env1\n|filter event_type='cdn_metrics' and (event_details.metricType='TTFB' or event_details.metricType='RESOURCE') and event_details.env in [${environment:singlequote}] and metadata.countryCode in [${country:singlequote}] \n|stats greatest(0,count(event_details.sthcdncachemiss)) as cachemiss,greatest(0,count(event_details.sthcdncachehit)) as cachehit,greatest(0,count(event_details.sthcdncacherefresh)) as cacherefreshhit,(cachehit+cacherefreshhit)/(cachemiss+cachehit+cacherefreshhit) as chr by env1\n|display env1,chr",
                     "id": "",
                     "logGroupNames": [
                         "${log_group}"
@@ -148,7 +147,6 @@
                     "refId": "A",
                     "region": "default",
                     "statsGroups": [
-                        "event_timestamp",
                         "env1"
                     ]
                 }
@@ -163,7 +161,6 @@
                         "fixedColor": "green",
                         "mode": "fixed"
                     },
-                    "displayName": "${__series.name}",
                     "mappings": [],
                     "max": 1,
                     "min": 0,
@@ -240,7 +237,7 @@
                         "mean"
                     ],
                     "fields": "",
-                    "values": false
+                    "values": true
                 },
                 "textMode": "auto"
             },
@@ -251,7 +248,7 @@
                         "type": "cloudwatch",
                         "uid": "7kalSkc4z"
                     },
-                    "expression": "filter event_type=\"cdn_metrics\" and (event_details.initiatorType=\"navigation\" or event_details.initiatorType=\"script\" or event_details.initiatorType=\"link\" ) and event_details.env in [${environment:singlequote}] and metadata.countryCode in [${country:singlequote}]\n|stats avg(event_details.compressRate) as compression by event_details.env,bin(5m) as event_timestamp\n|display event_timestamp,event_details.env,compression",
+                    "expression": "filter event_type=\"cdn_metrics\" and (event_details.initiatorType=\"navigation\" or event_details.initiatorType=\"script\" or event_details.initiatorType=\"link\" ) and event_details.env in [${environment:singlequote}] and metadata.countryCode in [${country:singlequote}]\n|stats avg(event_details.compressRate) as compression by event_details.env\n|display event_details.env,compression",
                     "id": "",
                     "logGroupNames": [
                         "${log_group}"
@@ -261,19 +258,17 @@
                     "refId": "A",
                     "region": "default",
                     "statsGroups": [
-                        "event_details.env",
-                        "event_timestamp"
+                        "event_details.env"
                     ]
                 }
             ],
-            "title": "Compression: environment '${environment}', Country '${country}'",
+            "title": "Avg. Compression: environment '${environment}', Country '${country}'",
             "type": "stat"
         },
         {
             "description": "",
             "fieldConfig": {
                 "defaults": {
-                    "displayName": "${__series.name}",
                     "mappings": [],
                     "thresholds": {
                         "mode": "absolute",
@@ -340,7 +335,7 @@
                         "lastNotNull"
                     ],
                     "fields": "",
-                    "values": false
+                    "values": true
                 },
                 "textMode": "auto"
             },
@@ -351,7 +346,7 @@
                         "type": "cloudwatch",
                         "uid": "7kalSkc4z"
                     },
-                    "expression": "fields concat(event_details.env,'-',metadata.deviceType) as env\n|filter event_type='cdn_metrics' and event_details.env in [${environment:singlequote}] and metadata.countryCode in [${country:singlequote}]\n|stats count() as deviceCount by bin(5m) as event_timestamp,env,metadata.countryCode\n|display event_timestamp,env,deviceCount",
+                    "expression": "fields concat(event_details.env,'-',metadata.deviceType) as env\n|filter event_type='cdn_metrics' and event_details.env in [${environment:singlequote}] and metadata.countryCode in [${country:singlequote}]\n|stats count() as deviceCount by env,metadata.deviceType\n|display env,deviceCount",
                     "id": "",
                     "logGroupNames": [
                         "${log_group}"
@@ -361,9 +356,8 @@
                     "refId": "A",
                     "region": "default",
                     "statsGroups": [
-                        "event_timestamp",
                         "env",
-                        "metadata.countryCode"
+                        "metadata.deviceType"
                     ]
                 }
             ],
@@ -378,7 +372,6 @@
                         "fixedColor": "green",
                         "mode": "fixed"
                     },
-                    "displayName": "${__series.name}",
                     "mappings": [],
                     "thresholds": {
                         "mode": "absolute",
@@ -441,7 +434,7 @@
                         "sum"
                     ],
                     "fields": "",
-                    "values": false
+                    "values": true
                 },
                 "textMode": "auto"
             },
@@ -452,7 +445,7 @@
                         "type": "cloudwatch",
                         "uid": "7kalSkc4z"
                     },
-                    "expression": "filter event_type=\"cdn_metrics\" and event_details.env in [${environment:singlequote}] and metadata.countryCode in [${country:singlequote}]\n|stats sum(event_details.transferSize) as transferSize by event_details.env,bin(5m) as event_timestamp\n|display event_timestamp,event_details.env,transferSize",
+                    "expression": "filter event_type=\"cdn_metrics\" and event_details.env in [${environment:singlequote}] and metadata.countryCode in [${country:singlequote}]\n|stats sum(event_details.transferSize) as transferSize by event_details.env\n|display event_details.env,transferSize",
                     "id": "",
                     "logGroupNames": [
                         "${log_group}"
@@ -462,8 +455,7 @@
                     "refId": "A",
                     "region": "default",
                     "statsGroups": [
-                        "event_details.env",
-                        "event_timestamp"
+                        "event_details.env"
                     ]
                 }
             ],
@@ -477,7 +469,6 @@
                     "color": {
                         "mode": "thresholds"
                     },
-                    "displayName": "${__series.name}",
                     "mappings": [],
                     "thresholds": {
                         "mode": "absolute",
@@ -541,10 +532,10 @@
                 "orientation": "auto",
                 "reduceOptions": {
                     "calcs": [
-                        "mean"
+                        "sum"
                     ],
                     "fields": "",
-                    "values": false
+                    "values": true
                 },
                 "textMode": "auto"
             },
@@ -555,7 +546,7 @@
                         "type": "cloudwatch",
                         "uid": "7kalSkc4z"
                     },
-                    "expression": "filter event_type='cdn_metrics' and event_details.env in [${environment:singlequote}] and metadata.countryCode in [${country:singlequote}]\n|stats pct(event_details.sthcdnupstreamfbl,${percentile}) as originFBL by event_details.env,bin(5m) as event_timestamp\n|display event_timestamp,event_details.env,originFBL",
+                    "expression": "filter event_type='cdn_metrics' and ispresent(event_details.sthcdncachemiss) and event_details.env in [${environment:singlequote}] and metadata.countryCode in [${country:singlequote}]\n|stats pct(event_details.sthcdnupstreamfblduration,${percentile}) as originFBL by event_details.env\n|display event_details.env,originFBL",
                     "id": "",
                     "logGroupNames": [
                         "${log_group}"
@@ -565,8 +556,7 @@
                     "refId": "A",
                     "region": "default",
                     "statsGroups": [
-                        "event_details.env",
-                        "event_timestamp"
+                        "event_details.env"
                     ]
                 }
             ],
@@ -580,7 +570,6 @@
                     "color": {
                         "mode": "thresholds"
                     },
-                    "displayName": "${__series.name}",
                     "mappings": [],
                     "thresholds": {
                         "mode": "absolute",
@@ -643,7 +632,7 @@
                         "mean"
                     ],
                     "fields": "",
-                    "values": false
+                    "values": true
                 },
                 "textMode": "auto"
             },
@@ -654,7 +643,7 @@
                         "type": "cloudwatch",
                         "uid": "7kalSkc4z"
                     },
-                    "expression": "filter event_type=\"cdn_metrics\" and event_details.env in [${environment:singlequote}] and metadata.countryCode in [${country:singlequote}]\n|stats sum(event_details.transferSize) as transferSize, count() as totalRequests by event_details.env,bin(5m) as event_timestamp\n|display event_timestamp,event_details.env,transferSize/totalRequests ",
+                    "expression": "filter event_type=\"cdn_metrics\" and event_details.env in [${environment:singlequote}] and metadata.countryCode in [${country:singlequote}]\n|stats sum(event_details.transferSize) as transferSize, count() as totalRequests by event_details.env \n|display event_details.env,transferSize/totalRequests ",
                     "id": "",
                     "logGroupNames": [
                         "${log_group}"
@@ -664,8 +653,7 @@
                     "refId": "A",
                     "region": "default",
                     "statsGroups": [
-                        "event_details.env",
-                        "event_timestamp"
+                        "event_details.env"
                     ]
                 }
             ],
@@ -844,26 +832,6 @@
                     "statsGroups": [
                         "metadata.countryCode",
                         "event_details.env"
-                    ]
-                },
-                {
-                    "datasource": {
-                        "type": "cloudwatch",
-                        "uid": "7kalSkc4z"
-                    },
-                    "expression": "fields concat(event_details.env,'-Global') as env\n|filter event_type='cdn_metrics' and event_details.initiatorType='navigation' and event_details.env in [${environment:singlequote}]\n|stats count() as pageViews by bin(5m) as event_timestamp,env\n",
-                    "hide": true,
-                    "id": "",
-                    "logGroupNames": [
-                        "${log_group}"
-                    ],
-                    "namespace": "",
-                    "queryMode": "Logs",
-                    "refId": "Global",
-                    "region": "default",
-                    "statsGroups": [
-                        "event_timestamp",
-                        "env"
                     ]
                 }
             ],
@@ -1526,7 +1494,6 @@
                         "mode": "thresholds"
                     },
                     "decimals": 0,
-                    "displayName": "${__series.name}",
                     "mappings": [],
                     "max": 1,
                     "min": 0,
@@ -1610,7 +1577,7 @@
                         "mean"
                     ],
                     "fields": "",
-                    "values": false
+                    "values": true
                 },
                 "textMode": "auto"
             },
@@ -1621,7 +1588,7 @@
                         "type": "cloudwatch",
                         "uid": "7kalSkc4z"
                     },
-                    "expression": "fields event_details.env as env1\n|filter event_type='cdn_metrics' and (event_details.initiatorType='navigation') and event_details.env in [${environment:singlequote}] and metadata.countryCode in [${country:singlequote}] \n|stats greatest(0,count(event_details.sthcdncachemiss)) as cachemiss,greatest(0,count(event_details.sthcdncachehit)) as cachehit, greatest(0,count(event_details.sthcdncacherefresh)) as cacherefreshhit,(cachehit+cacherefreshhit)/(cachehit+cacherefreshhit+cachemiss) as chr by bin(5m) as event_timestamp,env1\n|display event_timestamp,env1,chr",
+                    "expression": "fields event_details.env as env1\n|filter event_type='cdn_metrics' and (event_details.initiatorType='navigation') and event_details.env in [${environment:singlequote}] and metadata.countryCode in [${country:singlequote}] \n|stats greatest(0,count(event_details.sthcdncachemiss)) as cachemiss,greatest(0,count(event_details.sthcdncachehit)) as cachehit, greatest(0,count(event_details.sthcdncacherefresh)) as cacherefreshhit,(cachehit+cacherefreshhit)/(cachehit+cacherefreshhit+cachemiss) as chr by env1\n|display env1,chr",
                     "id": "",
                     "logGroupNames": [
                         "${log_group}"
@@ -1631,7 +1598,6 @@
                     "refId": "A",
                     "region": "default",
                     "statsGroups": [
-                        "event_timestamp",
                         "env1"
                     ]
                 }
@@ -1645,7 +1611,6 @@
                     "color": {
                         "mode": "thresholds"
                     },
-                    "displayName": "${__series.name}",
                     "mappings": [],
                     "thresholds": {
                         "mode": "absolute",
@@ -1712,7 +1677,7 @@
                         "mean"
                     ],
                     "fields": "",
-                    "values": false
+                    "values": true
                 },
                 "textMode": "auto"
             },
@@ -1723,7 +1688,7 @@
                         "type": "cloudwatch",
                         "uid": "7kalSkc4z"
                     },
-                    "expression": "filter event_type=\"cdn_metrics\" and (event_details.initiatorType=\"navigation\") and event_details.env in [${environment:singlequote}] and metadata.countryCode in [${country:singlequote}]\n|stats avg(event_details.compressRate) as compression by event_details.env,bin(5m) as event_timestamp\n|display event_timestamp,event_details.env,compression",
+                    "expression": "filter event_type=\"cdn_metrics\" and (event_details.initiatorType=\"navigation\") and event_details.env in [${environment:singlequote}] and metadata.countryCode in [${country:singlequote}]\n|stats avg(event_details.compressRate) as compression by event_details.env \n|display event_details.env,compression",
                     "id": "",
                     "logGroupNames": [
                         "${log_group}"
@@ -1733,12 +1698,11 @@
                     "refId": "A",
                     "region": "default",
                     "statsGroups": [
-                        "event_details.env",
-                        "event_timestamp"
+                        "event_details.env"
                     ]
                 }
             ],
-            "title": "Compression Rate by environment: ${country}",
+            "title": "Avg. Compression Rate by environment: ${country}",
             "type": "stat"
         },
         {
@@ -1818,7 +1782,7 @@
                         "type": "cloudwatch",
                         "uid": "7kalSkc4z"
                     },
-                    "expression": "filter event_details.metricType='FCP'and event_details.env in [${environment:singlequote}] and metadata.countryCode in [${country:singlequote}]\n|stats pct(event_details.value,${percentile}) as fcp by event_details.metricType,event_details.env,bin(1m) as event_timestamp\n|display event_timestamp,event_details.env,fcp",
+                    "expression": "filter event_details.metricType='FCP'and event_details.env in [${environment:singlequote}] and metadata.countryCode in [${country:singlequote}]\n|stats pct(event_details.value,${percentile}) as fcp by event_details.metricType,event_details.env,bin(5m) as event_timestamp\n|display event_timestamp,event_details.env,fcp",
                     "id": "",
                     "logGroupNames": [
                         "${log_group}"
@@ -1865,7 +1829,6 @@
                     "color": {
                         "mode": "thresholds"
                     },
-                    "displayName": "${__series.name}",
                     "mappings": [],
                     "thresholds": {
                         "mode": "absolute",
@@ -1928,7 +1891,7 @@
                         "mean"
                     ],
                     "fields": "",
-                    "values": false
+                    "values": true
                 },
                 "textMode": "auto"
             },
@@ -1939,7 +1902,7 @@
                         "type": "cloudwatch",
                         "uid": "7kalSkc4z"
                     },
-                    "expression": "filter event_type='cdn_metrics' and event_details.initiatorType='navigation' and event_details.env in [${environment:singlequote}] and metadata.countryCode in [${country:singlequote}]\n|stats sum(event_details.transferSize) as transferSize, count() as totalRequests by event_details.env,bin(5m) as event_timestamp\n|display event_timestamp,event_details.env,transferSize/totalRequests ",
+                    "expression": "filter event_type='cdn_metrics' and event_details.initiatorType='navigation' and event_details.env in [${environment:singlequote}] and metadata.countryCode in [${country:singlequote}]\n|stats sum(event_details.transferSize) as transferSize, count() as totalRequests by event_details.env\n|display event_details.env,transferSize/totalRequests ",
                     "id": "",
                     "logGroupNames": [
                         "${log_group}"
@@ -1949,8 +1912,7 @@
                     "refId": "A",
                     "region": "default",
                     "statsGroups": [
-                        "event_details.env",
-                        "event_timestamp"
+                        "event_details.env"
                     ]
                 }
             ],
@@ -2168,7 +2130,6 @@
                         "mode": "thresholds"
                     },
                     "decimals": 0,
-                    "displayName": "${__series.name}",
                     "mappings": [],
                     "max": 1,
                     "min": 0,
@@ -2249,7 +2210,7 @@
                         "mean"
                     ],
                     "fields": "",
-                    "values": false
+                    "values": true
                 },
                 "textMode": "auto"
             },
@@ -2260,7 +2221,7 @@
                         "type": "cloudwatch",
                         "uid": "7kalSkc4z"
                     },
-                    "expression": "fields event_details.env as env1\n|filter event_type='cdn_metrics' and (event_details.initiatorType='img') and event_details.env in [${environment:singlequote}] and metadata.countryCode in [${country:singlequote}] \n|stats greatest(0,count(event_details.sthcdncachemiss)) as cachemiss,greatest(0,count(event_details.sthcdncachehit)) as cachehit,greatest(0,count(event_details.sthcdncacherefresh)) as cacherefreshhit,(cachehit+cacherefreshhit)/(cachehit+cacherefreshhit+cachemiss) as chr by bin(5m) as event_timestamp,env1\n|display event_timestamp,env1,chr",
+                    "expression": "fields event_details.env as env1\n|filter event_type='cdn_metrics' and (event_details.initiatorType='img') and event_details.env in [${environment:singlequote}] and metadata.countryCode in [${country:singlequote}] \n|stats greatest(0,count(event_details.sthcdncachemiss)) as cachemiss,greatest(0,count(event_details.sthcdncachehit)) as cachehit,greatest(0,count(event_details.sthcdncacherefresh)) as cacherefreshhit,(cachehit+cacherefreshhit)/(cachehit+cacherefreshhit+cachemiss) as chr by env1\n|display env1,chr",
                     "id": "",
                     "logGroupNames": [
                         "${log_group}"
@@ -2270,7 +2231,6 @@
                     "refId": "A",
                     "region": "default",
                     "statsGroups": [
-                        "event_timestamp",
                         "env1"
                     ]
                 }
@@ -2388,7 +2348,6 @@
                     "color": {
                         "mode": "thresholds"
                     },
-                    "displayName": "${__series.name}",
                     "mappings": [],
                     "thresholds": {
                         "mode": "absolute",
@@ -2451,7 +2410,7 @@
                         "mean"
                     ],
                     "fields": "",
-                    "values": false
+                    "values": true
                 },
                 "textMode": "auto"
             },
@@ -2462,7 +2421,7 @@
                         "type": "cloudwatch",
                         "uid": "7kalSkc4z"
                     },
-                    "expression": "filter event_type='cdn_metrics' and event_details.initiatorType='img' and event_details.env in [${environment:singlequote}] and metadata.countryCode in [${country:singlequote}]\n|stats sum(event_details.transferSize) as transferSize, count() as totalRequests by event_details.env,bin(5m) as event_timestamp\n|display event_timestamp,event_details.env,transferSize/totalRequests ",
+                    "expression": "filter event_type='cdn_metrics' and event_details.initiatorType='img' and event_details.env in [${environment:singlequote}] and metadata.countryCode in [${country:singlequote}]\n|stats sum(event_details.transferSize) as transferSize, count() as totalRequests by event_details.env\n|display event_details.env,transferSize/totalRequests ",
                     "id": "",
                     "logGroupNames": [
                         "${log_group}"
@@ -2472,8 +2431,7 @@
                     "refId": "A",
                     "region": "default",
                     "statsGroups": [
-                        "event_details.env",
-                        "event_timestamp"
+                        "event_details.env"
                     ]
                 }
             ],
@@ -2487,7 +2445,6 @@
                     "color": {
                         "mode": "thresholds"
                     },
-                    "displayName": "${__series.name}",
                     "mappings": [],
                     "thresholds": {
                         "mode": "absolute",
@@ -2550,7 +2507,7 @@
                         "sum"
                     ],
                     "fields": "",
-                    "values": false
+                    "values": true
                 },
                 "textMode": "auto"
             },
@@ -2561,7 +2518,7 @@
                         "type": "cloudwatch",
                         "uid": "7kalSkc4z"
                     },
-                    "expression": "filter event_type='cdn_metrics' and event_details.initiatorType='img' and event_details.env in [${environment:singlequote}] and metadata.countryCode in [${country:singlequote}]\n|stats sum(event_details.transferSize) as transferSize by event_details.env,bin(5m) as event_timestamp\n|display event_timestamp,event_details.env,transferSize",
+                    "expression": "filter event_type='cdn_metrics' and event_details.initiatorType='img' and event_details.env in [${environment:singlequote}] and metadata.countryCode in [${country:singlequote}]\n|stats sum(event_details.transferSize) as transferSize by event_details.env \n|display event_details.env,transferSize",
                     "id": "",
                     "logGroupNames": [
                         "${log_group}"
@@ -2571,8 +2528,7 @@
                     "refId": "A",
                     "region": "default",
                     "statsGroups": [
-                        "event_details.env",
-                        "event_timestamp"
+                        "event_details.env"
                     ]
                 }
             ],
@@ -2599,7 +2555,6 @@
                         "mode": "thresholds"
                     },
                     "decimals": 0,
-                    "displayName": "${__series.name}",
                     "mappings": [],
                     "max": 1,
                     "min": 0,
@@ -2680,7 +2635,7 @@
                         "mean"
                     ],
                     "fields": "",
-                    "values": false
+                    "values": true
                 },
                 "textMode": "auto"
             },
@@ -2691,7 +2646,7 @@
                         "type": "cloudwatch",
                         "uid": "7kalSkc4z"
                     },
-                    "expression": "fields event_details.env as env1\n|filter event_type='cdn_metrics' and (event_details.initiatorType='script') and event_details.env in [${environment:singlequote}] and metadata.countryCode in [${country:singlequote}] \n|stats greatest(0,count(event_details.sthcdncachemiss)) as cachemiss,greatest(0,count(event_details.sthcdncachehit)) as cachehit, greatest(0,count(event_details.sthcdncacherefresh)) as cacherefreshhit,(cachehit+cacherefreshhit)/(cachehit+cacherefreshhit+cachemiss) as chr by bin(5m) as event_timestamp,env1\n|display event_timestamp,env1,chr",
+                    "expression": "fields event_details.env as env1\n|filter event_type='cdn_metrics' and (event_details.initiatorType='script') and event_details.env in [${environment:singlequote}] and metadata.countryCode in [${country:singlequote}] \n|stats greatest(0,count(event_details.sthcdncachemiss)) as cachemiss,greatest(0,count(event_details.sthcdncachehit)) as cachehit, greatest(0,count(event_details.sthcdncacherefresh)) as cacherefreshhit,(cachehit+cacherefreshhit)/(cachehit+cacherefreshhit+cachemiss) as chr by env1\n|display env1,chr",
                     "id": "",
                     "logGroupNames": [
                         "${log_group}"
@@ -2701,7 +2656,6 @@
                     "refId": "A",
                     "region": "default",
                     "statsGroups": [
-                        "event_timestamp",
                         "env1"
                     ]
                 }
@@ -2812,7 +2766,6 @@
                     "color": {
                         "mode": "thresholds"
                     },
-                    "displayName": "${__series.name}",
                     "mappings": [],
                     "thresholds": {
                         "mode": "absolute",
@@ -2875,7 +2828,7 @@
                         "mean"
                     ],
                     "fields": "",
-                    "values": false
+                    "values": true
                 },
                 "textMode": "auto"
             },
@@ -2886,7 +2839,7 @@
                         "type": "cloudwatch",
                         "uid": "7kalSkc4z"
                     },
-                    "expression": "filter event_type='cdn_metrics' and event_details.initiatorType='script' and event_details.env in [${environment:singlequote}] and metadata.countryCode in [${country:singlequote}]\n|stats sum(event_details.transferSize) as transferSize, count() as totalRequests by event_details.env,bin(5m) as event_timestamp\n|display event_timestamp,event_details.env,transferSize/totalRequests ",
+                    "expression": "filter event_type='cdn_metrics' and event_details.initiatorType='script' and event_details.env in [${environment:singlequote}] and metadata.countryCode in [${country:singlequote}]\n|stats sum(event_details.transferSize) as transferSize, count() as totalRequests by event_details.env\n|display event_details.env,transferSize/totalRequests ",
                     "id": "",
                     "logGroupNames": [
                         "${log_group}"
@@ -2896,8 +2849,7 @@
                     "refId": "A",
                     "region": "default",
                     "statsGroups": [
-                        "event_details.env",
-                        "event_timestamp"
+                        "event_details.env"
                     ]
                 }
             ],
@@ -2911,7 +2863,6 @@
                     "color": {
                         "mode": "thresholds"
                     },
-                    "displayName": "${__series.name}",
                     "mappings": [],
                     "thresholds": {
                         "mode": "absolute",
@@ -2974,7 +2925,7 @@
                         "sum"
                     ],
                     "fields": "",
-                    "values": false
+                    "values": true
                 },
                 "textMode": "auto"
             },
@@ -2985,7 +2936,7 @@
                         "type": "cloudwatch",
                         "uid": "7kalSkc4z"
                     },
-                    "expression": "filter event_type='cdn_metrics' and event_details.initiatorType='script' and event_details.env in [${environment:singlequote}] and metadata.countryCode in [${country:singlequote}]\n|stats sum(event_details.transferSize) as transferSize by event_details.env,bin(5m) as event_timestamp\n|display event_timestamp,event_details.env,transferSize",
+                    "expression": "filter event_type='cdn_metrics' and event_details.initiatorType='script' and event_details.env in [${environment:singlequote}] and metadata.countryCode in [${country:singlequote}]\n|stats sum(event_details.transferSize) as transferSize by event_details.env\n|display event_details.env,transferSize",
                     "id": "",
                     "logGroupNames": [
                         "${log_group}"
@@ -2995,8 +2946,7 @@
                     "refId": "A",
                     "region": "default",
                     "statsGroups": [
-                        "event_details.env",
-                        "event_timestamp"
+                        "event_details.env"
                     ]
                 }
             ],
@@ -3010,7 +2960,6 @@
                         "fixedColor": "green",
                         "mode": "fixed"
                     },
-                    "displayName": "${__series.name}",
                     "mappings": [],
                     "max": 1,
                     "min": 0,
@@ -3087,7 +3036,7 @@
                         "mean"
                     ],
                     "fields": "",
-                    "values": false
+                    "values": true
                 },
                 "textMode": "auto"
             },
@@ -3098,7 +3047,7 @@
                         "type": "cloudwatch",
                         "uid": "7kalSkc4z"
                     },
-                    "expression": "filter event_type='cdn_metrics' and (event_details.initiatorType='script') and event_details.env in [${environment:singlequote}] and metadata.countryCode in [${country:singlequote}]\n|stats avg(event_details.compressRate) as compression by event_details.env,bin(5m) as event_timestamp\n|display event_timestamp,event_details.env,compression",
+                    "expression": "filter event_type='cdn_metrics' and (event_details.initiatorType='script') and event_details.env in [${environment:singlequote}] and metadata.countryCode in [${country:singlequote}]\n|stats avg(event_details.compressRate) as compression by event_details.env\n|display event_details.env,compression",
                     "id": "",
                     "logGroupNames": [
                         "${log_group}"
@@ -3108,12 +3057,11 @@
                     "refId": "A",
                     "region": "default",
                     "statsGroups": [
-                        "event_details.env",
-                        "event_timestamp"
+                        "event_details.env"
                     ]
                 }
             ],
-            "title": "Compression Rate by environment: ${country}",
+            "title": "Avg. Compression Rate by environment: ${country}",
             "type": "stat"
         },
         {
@@ -3136,7 +3084,6 @@
                         "mode": "thresholds"
                     },
                     "decimals": 0,
-                    "displayName": "${__series.name}",
                     "mappings": [],
                     "max": 1,
                     "min": 0,
@@ -3217,7 +3164,7 @@
                         "mean"
                     ],
                     "fields": "",
-                    "values": false
+                    "values": true
                 },
                 "textMode": "auto"
             },
@@ -3228,7 +3175,7 @@
                         "type": "cloudwatch",
                         "uid": "7kalSkc4z"
                     },
-                    "expression": "fields event_details.env as env1\n|filter event_type='cdn_metrics' and (event_details.initiatorType='link') and event_details.env in [${environment:singlequote}] and metadata.countryCode in [${country:singlequote}] \n|stats greatest(0,count(event_details.sthcdncachemiss)) as cachemiss,greatest(0,count(event_details.sthcdncachehit)) as cachehit,greatest(0,count(event_details.sthcdncacherefresh)) as cacherefreshhit,(cachehit+cacherefreshhit)/(cachehit+cachemiss+cacherefreshhit) as chr by bin(5m) as event_timestamp,env1\n|display event_timestamp,env1,chr",
+                    "expression": "fields event_details.env as env1\n|filter event_type='cdn_metrics' and (event_details.initiatorType='link') and event_details.env in [${environment:singlequote}] and metadata.countryCode in [${country:singlequote}] \n|stats greatest(0,count(event_details.sthcdncachemiss)) as cachemiss,greatest(0,count(event_details.sthcdncachehit)) as cachehit,greatest(0,count(event_details.sthcdncacherefresh)) as cacherefreshhit,(cachehit+cacherefreshhit)/(cachehit+cachemiss+cacherefreshhit) as chr by env1\n|display env1,chr",
                     "id": "",
                     "logGroupNames": [
                         "${log_group}"
@@ -3238,7 +3185,6 @@
                     "refId": "A",
                     "region": "default",
                     "statsGroups": [
-                        "event_timestamp",
                         "env1"
                     ]
                 }
@@ -3349,7 +3295,6 @@
                     "color": {
                         "mode": "thresholds"
                     },
-                    "displayName": "${__series.name}",
                     "mappings": [],
                     "thresholds": {
                         "mode": "absolute",
@@ -3412,7 +3357,7 @@
                         "mean"
                     ],
                     "fields": "",
-                    "values": false
+                    "values": true
                 },
                 "textMode": "auto"
             },
@@ -3423,7 +3368,7 @@
                         "type": "cloudwatch",
                         "uid": "7kalSkc4z"
                     },
-                    "expression": "filter event_type='cdn_metrics' and event_details.initiatorType='link' and event_details.env in [${environment:singlequote}] and metadata.countryCode in [${country:singlequote}]\n|stats sum(event_details.transferSize) as transferSize, count() as totalRequests by event_details.env,bin(5m) as event_timestamp\n|display event_timestamp,event_details.env,transferSize/totalRequests ",
+                    "expression": "filter event_type='cdn_metrics' and event_details.initiatorType='link' and event_details.env in [${environment:singlequote}] and metadata.countryCode in [${country:singlequote}]\n|stats sum(event_details.transferSize) as transferSize, count() as totalRequests by event_details.env\n|display event_details.env,transferSize/totalRequests ",
                     "id": "",
                     "logGroupNames": [
                         "${log_group}"
@@ -3433,8 +3378,7 @@
                     "refId": "A",
                     "region": "default",
                     "statsGroups": [
-                        "event_details.env",
-                        "event_timestamp"
+                        "event_details.env"
                     ]
                 }
             ],
@@ -3448,7 +3392,6 @@
                     "color": {
                         "mode": "thresholds"
                     },
-                    "displayName": "${__series.name}",
                     "mappings": [],
                     "thresholds": {
                         "mode": "absolute",
@@ -3511,7 +3454,7 @@
                         "sum"
                     ],
                     "fields": "",
-                    "values": false
+                    "values": true
                 },
                 "textMode": "auto"
             },
@@ -3522,7 +3465,7 @@
                         "type": "cloudwatch",
                         "uid": "7kalSkc4z"
                     },
-                    "expression": "filter event_type='cdn_metrics' and event_details.initiatorType='link' and event_details.env in [${environment:singlequote}] and metadata.countryCode in [${country:singlequote}]\n|stats sum(event_details.transferSize) as transferSize by event_details.env,bin(5m) as event_timestamp\n|display event_timestamp,event_details.env,transferSize",
+                    "expression": "filter event_type='cdn_metrics' and event_details.initiatorType='link' and event_details.env in [${environment:singlequote}] and metadata.countryCode in [${country:singlequote}]\n|stats sum(event_details.transferSize) as transferSize by event_details.env\n|display event_details.env,transferSize",
                     "id": "",
                     "logGroupNames": [
                         "${log_group}"
@@ -3532,8 +3475,7 @@
                     "refId": "A",
                     "region": "default",
                     "statsGroups": [
-                        "event_details.env",
-                        "event_timestamp"
+                        "event_details.env"
                     ]
                 }
             ],
@@ -3547,7 +3489,6 @@
                         "fixedColor": "green",
                         "mode": "fixed"
                     },
-                    "displayName": "${__series.name}",
                     "mappings": [],
                     "max": 1,
                     "min": 0,
@@ -3624,7 +3565,7 @@
                         "mean"
                     ],
                     "fields": "",
-                    "values": false
+                    "values": true
                 },
                 "textMode": "auto"
             },
@@ -3635,7 +3576,7 @@
                         "type": "cloudwatch",
                         "uid": "7kalSkc4z"
                     },
-                    "expression": "filter event_type='cdn_metrics' and (event_details.initiatorType='link') and event_details.env in [${environment:singlequote}] and metadata.countryCode in [${country:singlequote}]\n|stats avg(event_details.compressRate) as compression by event_details.env,bin(5m) as event_timestamp\n|display event_timestamp,event_details.env,compression",
+                    "expression": "filter event_type='cdn_metrics' and (event_details.initiatorType='link') and event_details.env in [${environment:singlequote}] and metadata.countryCode in [${country:singlequote}]\n|stats avg(event_details.compressRate) as compression by event_details.env\n|display event_details.env,compression",
                     "id": "",
                     "logGroupNames": [
                         "${log_group}"
@@ -3645,12 +3586,11 @@
                     "refId": "A",
                     "region": "default",
                     "statsGroups": [
-                        "event_details.env",
-                        "event_timestamp"
+                        "event_details.env"
                     ]
                 }
             ],
-            "title": "Compression Rate by environment: ${country}",
+            "title": "Avg. Compression Rate by environment: ${country}",
             "type": "stat"
         }
     ],
@@ -3812,8 +3752,8 @@
     },
     "timepicker": {},
     "timezone": "",
-    "title": "Observability: CloudFront Performance",
+    "title": "Observability: Website Performance",
     "uid": "FL-7Nz5Vk2",
-    "version": 6,
+    "version": 41,
     "weekStart": ""
 }
