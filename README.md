@@ -32,6 +32,9 @@ export AWS_PROFILE=''
 export MONITOR_DOMAIN_NAME=''
 # AWS Region to deploy the solution
 export CDK_DEPLOY_REGION=''
+# CW RUM sample rate, range between 0 and 1. setting a lower value reduces the
+# events emitted by viewer sessions and cut cost.
+export SAMPLE_RATE=0.1
 ```
 
 4. Run `deploy.sh`
