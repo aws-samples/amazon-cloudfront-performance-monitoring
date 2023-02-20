@@ -45,7 +45,7 @@ export CDK_DEPLOY_REGION=''
 1. Navigate to Behaviors tab and edit
 ![CloudFront Behavior](/images/cf-distribution1.jpg)
 
-1. Assign the Origin Response Policy to the one created during deployment (pattern region-sth-tao-policy) This policy enables ‘Server-Timing’ and ‘Timing-Allow-Origin’ headers for this behavior and *Save Changes*
+1. Assign the Response Header Policy to the one created during deployment (pattern {StackName}-default-prod) This policy enables ‘Server-Timing’ and ‘Timing-Allow-Origin’ headers for this behavior and *Save Changes*
 
 ![CloudFront Behavior Update](/images/cf-distribution2.jpg)
 
