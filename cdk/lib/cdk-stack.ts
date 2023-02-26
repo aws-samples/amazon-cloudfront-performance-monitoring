@@ -35,7 +35,8 @@ import * as sfn from 'aws-cdk-lib/aws-stepfunctions';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
 import * as logs from 'aws-cdk-lib/aws-logs';
 import { EventbridgeToStepfunctions, EventbridgeToStepfunctionsProps } from '@aws-solutions-constructs/aws-eventbridge-stepfunctions';
-import * as events from 'aws-cdk-lib/aws-events';
+import * as targets from 'aws-cdk-lib/aws-events-targets';
+import { Rule, Schedule } from 'aws-cdk-lib/aws-events';
 
 export interface CdkStackProps extends StackProps {
   // hostedZoneId: any;
@@ -125,8 +126,9 @@ export class CdkStack extends cdk.Stack {
         StartTime: sfn.JsonPath.numberAt('$.Payload.startTime'),
         EndTime: sfn.JsonPath.numberAt('$.Payload.endTime'),
         LogGroupName: cloudwatchRum.appMonitorCWLogGroup,
-        QueryString: "fields metadata.countryCode as cc|stats count_distinct(cc) as count by cc |display cc|limit 20",
+        QueryString: "fields metadata.countryCode as cc|stats count_distinct(cc) as count by cc |sort count desc|display cc",
       },
+
       additionalIamStatements: [new iam.PolicyStatement({
         resources: ["*"],
         actions: [
@@ -185,7 +187,7 @@ export class CdkStack extends cdk.Stack {
             "Value": 1
           }
         ],
-        "Namespace": "Custom/RUM"
+        "Namespace": `Custom/RUM${Stack.of(this).stackName}`
       },
       additionalIamStatements: [new iam.PolicyStatement({
         resources: ["*"],
@@ -218,23 +220,38 @@ export class CdkStack extends cdk.Stack {
     //   },
     // });
 
-    const constructProps: EventbridgeToStepfunctionsProps = {
-      stateMachineProps: {
-        definition: definition,
-        timeout: cdk.Duration.minutes(5),
-        logs: {
-          destination: logGroup,
-          level: sfn.LogLevel.ALL,
-        },
+    // const constructProps: EventbridgeToStepfunctionsProps = {
+    //   stateMachineProps: {
+    //     stateMachineName: `${Stack.of(this).stackName}-FindCountries`,
+    //     definition: definition,
+    //     timeout: cdk.Duration.minutes(5),
+    //     logs: {
+    //       destination: logGroup,
+    //       level: sfn.LogLevel.ALL,
+    //     },
+    //   },
+    //   eventRuleProps: {
+    //     schedule: events.Schedule.rate(cdk.Duration.minutes(60))
+    //   }
+    // };
+
+    let findCountries = new sfn.StateMachine(this, 'FindCountries', {
+      definition,
+      timeout: cdk.Duration.minutes(5),
+      logs: {
+        destination: logGroup,
+        level: sfn.LogLevel.ALL,
       },
-      eventRuleProps: {
-        schedule: events.Schedule.rate(cdk.Duration.minutes(60))
-      }
-    };
+    });
 
-    const eventBridgeStepFunction = new EventbridgeToStepfunctions(this, 'FindCountries', constructProps);
+    new Rule(this, "FindCountriesScheduler", {
+      schedule: Schedule.rate(cdk.Duration.days(1)),
+      targets: [new targets.SfnStateMachine(findCountries)],
+    });
 
-    NagSuppressions.addResourceSuppressions(eventBridgeStepFunction.stateMachine, [
+    // const eventBridgeStepFunction = new EventbridgeToStepfunctions(this, 'FindCountries', constructProps);
+
+    NagSuppressions.addResourceSuppressions(findCountries, [
       {
         id: 'AwsSolutions-SF2',
         reason: 'This workflow fetches the recent country list from CloudWatch Logs.',

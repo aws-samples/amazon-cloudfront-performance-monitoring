@@ -13,7 +13,7 @@ export SAMPLE_RATE=0.1
 # npm audit fix
 cd ../web-vitals && npm install && npm audit fix && npm run build
 cd ../cdk
-npm install
+# npm install
 npx cdk bootstrap --profile $AWS_PROFILE
 # npx cdk synth
 npx cdk deploy --profile $AWS_PROFILE --require-approval never
