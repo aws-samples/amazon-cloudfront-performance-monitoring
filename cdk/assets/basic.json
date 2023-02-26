@@ -22,7 +22,7 @@
     "fiscalYearStartMonth": 0,
     "graphTooltip": 0,
     "id": 7,
-    "iteration": 1676818010076,
+    "iteration": 1677438569027,
     "links": [],
     "liveNow": false,
     "panels": [
@@ -730,8 +730,8 @@
                 ]
             },
             "gridPos": {
-                "h": 11,
-                "w": 19,
+                "h": 12,
+                "w": 12,
                 "x": 0,
                 "y": 11
             },
@@ -773,6 +773,72 @@
             "type": "bargauge"
         },
         {
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "thresholds"
+                    },
+                    "mappings": [],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            },
+                            {
+                                "color": "red",
+                                "value": 80
+                            }
+                        ]
+                    }
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 12,
+                "w": 12,
+                "x": 12,
+                "y": 11
+            },
+            "id": 56,
+            "options": {
+                "displayMode": "gradient",
+                "orientation": "horizontal",
+                "reduceOptions": {
+                    "calcs": [
+                        "lastNotNull"
+                    ],
+                    "fields": "",
+                    "values": true
+                },
+                "showUnfilled": true
+            },
+            "pluginVersion": "8.4.7",
+            "targets": [
+                {
+                    "datasource": {
+                        "type": "cloudwatch",
+                        "uid": "7kalSkc4z"
+                    },
+                    "expression": "fields metadata.countryCode as countryCode\n|filter event_type='cdn_metrics' and event_details.initiatorType='navigation' and event_details.env in [${environment:singlequote}] \n|filter countryCode in [${country:singlequote}]\n|stats count() as pageViews by event_details.sthcdnpop as PoP",
+                    "id": "",
+                    "logGroupNames": [
+                        "${log_group}"
+                    ],
+                    "namespace": "",
+                    "queryMode": "Logs",
+                    "refId": "A",
+                    "region": "default",
+                    "statsGroups": [
+                        "PoP"
+                    ]
+                }
+            ],
+            "title": "Page Views by Edge Location: ${country}",
+            "type": "bargauge"
+        },
+        {
             "description": "",
             "fieldConfig": {
                 "defaults": {
@@ -798,7 +864,7 @@
                 "h": 10,
                 "w": 12,
                 "x": 0,
-                "y": 22
+                "y": 23
             },
             "id": 14,
             "options": {
@@ -858,72 +924,6 @@
                     }
                 }
             ],
-            "type": "bargauge"
-        },
-        {
-            "fieldConfig": {
-                "defaults": {
-                    "color": {
-                        "mode": "thresholds"
-                    },
-                    "mappings": [],
-                    "thresholds": {
-                        "mode": "absolute",
-                        "steps": [
-                            {
-                                "color": "green",
-                                "value": null
-                            },
-                            {
-                                "color": "red",
-                                "value": 80
-                            }
-                        ]
-                    }
-                },
-                "overrides": []
-            },
-            "gridPos": {
-                "h": 10,
-                "w": 12,
-                "x": 12,
-                "y": 22
-            },
-            "id": 56,
-            "options": {
-                "displayMode": "gradient",
-                "orientation": "horizontal",
-                "reduceOptions": {
-                    "calcs": [
-                        "lastNotNull"
-                    ],
-                    "fields": "",
-                    "values": true
-                },
-                "showUnfilled": true
-            },
-            "pluginVersion": "8.4.7",
-            "targets": [
-                {
-                    "datasource": {
-                        "type": "cloudwatch",
-                        "uid": "7kalSkc4z"
-                    },
-                    "expression": "fields metadata.countryCode as countryCode\n|filter event_type='cdn_metrics' and event_details.initiatorType='navigation' and event_details.env in [${environment:singlequote}] \n|filter countryCode in [${country:singlequote}]\n|stats count() as pageViews by event_details.sthcdnpop as PoP",
-                    "id": "",
-                    "logGroupNames": [
-                        "${log_group}"
-                    ],
-                    "namespace": "",
-                    "queryMode": "Logs",
-                    "refId": "A",
-                    "region": "default",
-                    "statsGroups": [
-                        "PoP"
-                    ]
-                }
-            ],
-            "title": "Page Views by Edge Location: ${country}",
             "type": "bargauge"
         },
         {
@@ -1008,7 +1008,7 @@
                 "h": 12,
                 "w": 24,
                 "x": 0,
-                "y": 32
+                "y": 33
             },
             "id": 54,
             "options": {
@@ -1129,7 +1129,7 @@
                 "h": 9,
                 "w": 12,
                 "x": 0,
-                "y": 44
+                "y": 45
             },
             "id": 42,
             "options": {
@@ -1242,7 +1242,7 @@
                 "h": 9,
                 "w": 12,
                 "x": 12,
-                "y": 44
+                "y": 45
             },
             "id": 12,
             "options": {
@@ -1330,7 +1330,7 @@
                 "h": 9,
                 "w": 12,
                 "x": 0,
-                "y": 53
+                "y": 54
             },
             "id": 55,
             "options": {
@@ -1426,7 +1426,7 @@
                 "h": 9,
                 "w": 12,
                 "x": 12,
-                "y": 53
+                "y": 54
             },
             "id": 52,
             "options": {
@@ -1480,7 +1480,7 @@
                 "h": 1,
                 "w": 24,
                 "x": 0,
-                "y": 62
+                "y": 63
             },
             "id": 5,
             "panels": [],
@@ -1564,7 +1564,7 @@
                 "h": 5,
                 "w": 5,
                 "x": 0,
-                "y": 63
+                "y": 64
             },
             "id": 18,
             "options": {
@@ -1664,7 +1664,7 @@
                 "h": 9,
                 "w": 3,
                 "x": 5,
-                "y": 63
+                "y": 64
             },
             "id": 19,
             "options": {
@@ -1761,7 +1761,7 @@
                 "h": 9,
                 "w": 14,
                 "x": 8,
-                "y": 63
+                "y": 64
             },
             "id": 11,
             "options": {
@@ -1878,7 +1878,7 @@
                 "h": 4,
                 "w": 5,
                 "x": 0,
-                "y": 68
+                "y": 69
             },
             "id": 44,
             "options": {
@@ -1975,7 +1975,7 @@
                 "h": 8,
                 "w": 11,
                 "x": 0,
-                "y": 72
+                "y": 73
             },
             "id": 20,
             "options": {
@@ -2071,7 +2071,7 @@
                 "h": 8,
                 "w": 11,
                 "x": 11,
-                "y": 72
+                "y": 73
             },
             "id": 21,
             "options": {
@@ -2116,7 +2116,7 @@
                 "h": 1,
                 "w": 24,
                 "x": 0,
-                "y": 80
+                "y": 81
             },
             "id": 23,
             "panels": [],
@@ -2197,7 +2197,7 @@
                 "h": 5,
                 "w": 5,
                 "x": 0,
-                "y": 81
+                "y": 82
             },
             "id": 24,
             "options": {
@@ -2302,7 +2302,7 @@
                 "h": 10,
                 "w": 13,
                 "x": 5,
-                "y": 81
+                "y": 82
             },
             "id": 25,
             "options": {
@@ -2397,7 +2397,7 @@
                 "h": 10,
                 "w": 6,
                 "x": 18,
-                "y": 81
+                "y": 82
             },
             "id": 45,
             "options": {
@@ -2494,7 +2494,7 @@
                 "h": 5,
                 "w": 5,
                 "x": 0,
-                "y": 86
+                "y": 87
             },
             "id": 26,
             "options": {
@@ -2541,7 +2541,7 @@
                 "h": 1,
                 "w": 24,
                 "x": 0,
-                "y": 91
+                "y": 92
             },
             "id": 28,
             "panels": [],
@@ -2622,7 +2622,7 @@
                 "h": 7,
                 "w": 5,
                 "x": 0,
-                "y": 92
+                "y": 93
             },
             "id": 29,
             "options": {
@@ -2720,7 +2720,7 @@
                 "h": 8,
                 "w": 12,
                 "x": 5,
-                "y": 92
+                "y": 93
             },
             "id": 31,
             "options": {
@@ -2815,7 +2815,7 @@
                 "h": 8,
                 "w": 6,
                 "x": 17,
-                "y": 92
+                "y": 93
             },
             "id": 46,
             "options": {
@@ -2912,7 +2912,7 @@
                 "h": 6,
                 "w": 5,
                 "x": 0,
-                "y": 99
+                "y": 100
             },
             "id": 30,
             "options": {
@@ -3023,7 +3023,7 @@
                 "h": 5,
                 "w": 5,
                 "x": 5,
-                "y": 100
+                "y": 101
             },
             "id": 32,
             "options": {
@@ -3070,7 +3070,7 @@
                 "h": 1,
                 "w": 24,
                 "x": 0,
-                "y": 105
+                "y": 106
             },
             "id": 34,
             "panels": [],
@@ -3151,7 +3151,7 @@
                 "h": 7,
                 "w": 5,
                 "x": 0,
-                "y": 106
+                "y": 107
             },
             "id": 35,
             "options": {
@@ -3249,7 +3249,7 @@
                 "h": 8,
                 "w": 12,
                 "x": 5,
-                "y": 106
+                "y": 107
             },
             "id": 37,
             "options": {
@@ -3344,7 +3344,7 @@
                 "h": 8,
                 "w": 5,
                 "x": 17,
-                "y": 106
+                "y": 107
             },
             "id": 47,
             "options": {
@@ -3441,7 +3441,7 @@
                 "h": 6,
                 "w": 5,
                 "x": 0,
-                "y": 113
+                "y": 114
             },
             "id": 36,
             "options": {
@@ -3552,7 +3552,7 @@
                 "h": 5,
                 "w": 5,
                 "x": 5,
-                "y": 114
+                "y": 115
             },
             "id": 38,
             "options": {
@@ -3634,17 +3634,17 @@
             },
             {
                 "current": {
-                    "selected": false,
+                    "selected": true,
                     "text": "All",
                     "value": "$__all"
                 },
-                "definition": "dimension_values(us-east-1,AWS/RUM,CountryCodes,country)",
+                "definition": "dimension_values(us-east-1,Custom/RUM-CloudFrontMonitoringStack,CountryCodes,country)",
                 "hide": 0,
                 "includeAll": true,
                 "multi": false,
                 "name": "country",
                 "options": [],
-                "query": "dimension_values(us-east-1,AWS/RUM,CountryCodes,country)",
+                "query": "dimension_values(us-east-1,Custom/RUM-CloudFrontMonitoringStack,CountryCodes,country)",
                 "refresh": 1,
                 "regex": "",
                 "skipUrlSync": false,
@@ -3754,6 +3754,6 @@
     "timezone": "",
     "title": "Observability: Website Performance",
     "uid": "FL-7Nz5Vk2",
-    "version": 41,
+    "version": 45,
     "weekStart": ""
 }

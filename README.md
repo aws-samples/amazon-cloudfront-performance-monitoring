@@ -150,10 +150,14 @@ and click *‘Import’*
 
 15. Access the website a few times so it can start capturing client side events.
 
-Note: The dashboard allows you to filter the view by countries. Today, within Grafana there is no support to query CloudWatch logs groups and populate dashboard variables.As a work around, a StepFunction workflow is scheduled to run every 1 hr to fetch the most recent list of 20 countries from the CloudWatch Logs. 
-You can find the scheduler created in EventBridge and study the flow from their. The list of countries are populated into CloudWatch metric namespace 'Custom/RUM'. Modify the scripts accordingly to change this behavior or you can hardcode the country list in the dashboard.
+Note: The dashboard allows you to filter the view by countries. Today, within Grafana there is no support to query CloudWatch logs groups and populate dashboard variables.As a work around, a StepFunction workflow is scheduled to run every 1 hr to fetch the most recent list of countries from the CloudWatch Logs. 
+You can find the scheduler created in EventBridge and study the flow from their. The list of countries are populated into CloudWatch metric namespace 'Custom/RUM{StackName}'. Modify the Step Function accordingly to change this behavior or you can hardcode the country list in the dashboard.
+You will need to modify the 'country' variable in the Grafana Dashboard to query your CloudWatch custom metric at line number 3641 in basic.json.
+Ex: Replace
+```dimension_values(us-east-1,Custom/RUM-CloudFrontMonitoringStack,CountryCodes,country)```
+with your value.
 
-Check to see the dashboard panels show up. Note, data may not be present initially.
+16. Check to see the dashboard panels show up. Note, data may not be present initially.
 
 ## Additional Learning Resources:
 
