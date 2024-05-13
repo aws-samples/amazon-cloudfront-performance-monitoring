@@ -88,7 +88,7 @@ export class CloudwatchRumConstruct extends Construct {
             installLatestAwsSdk: true,
             onCreate: awsRUMSDKCall,
             onUpdate: awsRUMSDKCall,
-            functionName: 'GetAppMonitor'
+            functionName: `GetAppMonitor-${physicalResourceId}`
         });
 
         customResource.node.addDependency(this.rumMonitor);

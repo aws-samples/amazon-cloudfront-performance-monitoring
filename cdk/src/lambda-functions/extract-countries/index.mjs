@@ -6,10 +6,12 @@ export const handler = async (event) => {
     let dimensions = [];
 
     event.cc.forEach(ele => {
-        console.log(ele[0].Value);
-        countries.push(ele[0].Value);
-        dimensions.push([{ Name: "country", Value: ele[0].Value }]);
-        count.push(1);
+        if (ele[0]) {
+            console.log(ele[0].Value);
+            countries.push(ele[0].Value);
+            dimensions.push([{ Name: "country", Value: ele[0].Value }]);
+            count.push(1);
+        }
     });
 
     let response = { "countries": countries, "count": count, "timestamp": "" + new Date().getTime(), "dimensions": dimensions };
